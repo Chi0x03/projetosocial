@@ -1,0 +1,127 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+const deleteQuestion = async (req, res) => {
+  const questionId = parseInt(req.params.id)
+  const professorId = req.session.professorId
+
+  try {
+    const deletedQuestion = await prisma.questao.delete({
+      where: {
+        id: questionId,
+        professorId
+      }
+    })
+    res.json(deleteQuestion)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Erro ao deletars questão' });
+  }
+}
+
+const editQuestion = async (req, res) => {
+  const { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, descritorId, disciplina } = req.body;
+  const questionId = parseInt(req.params.id)
+  const professorId = req.session.professorId
+  if (typeof questionId != 'number') res.status(500).json( {error: "Id não informado ou inválido"} )
+  
+  try {
+    const questaoEditada = await prisma.questao.update({
+      where: {
+        id: questionId,
+        professorId
+      },
+      data: {
+        enunciado,
+        alternativaA,
+        alternativaB,
+        alternativaC,
+        alternativaD,
+        alternativaE,
+        respostaCorreta,
+        // publica,
+        descritorId,
+        disciplina,
+        professorId
+      }
+    });
+    res.status(201).json(questaoEditada);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Erro ao editar questão' });
+  }
+}
+
+// Cria uma nova questão
+const createQuestion = async (req, res) => {
+  const { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta,  descritorId, disciplina } = req.body;
+  const professorId = req.session.professorId || 0;
+
+  try {
+    const novaQuestao = await prisma.questao.create({
+      data: {
+        enunciado,
+        alternativaA,
+        alternativaB,
+        alternativaC,
+        alternativaD,
+        alternativaE,
+        respostaCorreta,
+        // publica,
+        descritorId,
+        disciplina,
+        professorId
+      }
+    });
+    res.status(201).json(novaQuestao);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Erro ao criar questão' });
+  }
+};
+
+// Lista todas as questões disponíveis para o professor logado
+const getAllQuestions = async (req, res) => {
+  const professorId = req.session.professorId || 0;
+
+  const questoes = await prisma.questao.findMany({
+    where: {
+      OR: [
+        { publica: true },
+        { professorId }
+      ]
+    },
+  });
+
+  res.json(questoes);
+};
+
+// Obtém uma questão específica
+const getQuestion = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const professorId = req.session.professorId || 0; // TÁ CERTO ISSO?
+
+  const questao = await prisma.questao.findFirst({
+    where: {
+      id,
+      OR: [
+        { publica: true },
+        { professorId }
+      ]
+    }
+  });
+
+  if (questao) {
+    res.json(questao);
+  } else {
+    res.status(404).json({ error: 'Questão não encontrada' });
+  }
+};
+
+module.exports = {
+  createQuestion,
+  getAllQuestions,
+  getQuestion,
+  editQuestion,
+  deleteQuestion
+};
