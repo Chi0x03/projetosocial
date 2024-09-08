@@ -83,8 +83,33 @@ const addQuestionsToExam = async (req, res) => {
   }
 };
 
+const deleteQuestionsFromExam = async (req, res) => {
+  const provaId = parseInt(req.params.id);
+  const { questaoIds } = req.body;
+
+  if (!Array.isArray(questaoIds)) {
+    return res.status(400).json({ error: 'questaoIds deve ser um array de IDs' });
+  }
+
+  try {
+    const provasQuestoes = questaoIds.map(id => ({
+      provaId,
+      questaoId: id
+    }));
+
+    await prisma.provasQuestao.deleteMany({
+      data: provasQuestoes
+    });
+
+    res.status(200).json({ message: 'Questões associadas com sucesso à prova' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao associar questões à prova' });
+  }
+}
+
 module.exports = {
   createExam,
   getExam,
   addQuestionsToExam,
+  deleteQuestionsFromExam
 };

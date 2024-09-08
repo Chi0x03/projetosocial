@@ -3,7 +3,7 @@ const session = require('express-session');
 const app = express();
 const examRoutes = require('./routes/examRoutes');
 const questionRoutes = require('./routes/questionRoutes');
-const descritorRoutes = require('./routes/descritorRoutes');
+// const descritorRoutes = require('./routes/descritorRoutes');
 const authRoutes = require('./routes/authRoutes')
 
 app.use(express.json());
@@ -19,7 +19,7 @@ app.use(session({
 // Rotas
 app.use('/provas', examRoutes);
 app.use('/questoes', questionRoutes);
-app.use('/descritores', descritorRoutes);
+// app.use('/descritores', descritorRoutes);
 app.use('/auth', authRoutes); // Rota de autenticação
 
 
