@@ -1,6 +1,25 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const renameExam = async (req, res) => {
+  const { novoNome } = req.body;
+  const id = req.params.id;
+
+  try {
+    const provaEditada = await prisma.prova.update({
+      where: {
+        id
+      }, data: {
+        titulo: novoNome
+      }
+    })
+    return res.json(provaEditada)
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Falha ao renomear prova" })
+  }
+}
+
 const generateExam = async (req, res) => {
   const { titulo, descritorIds, numQuestoesPorDescritor } = req.body;
 
@@ -164,5 +183,6 @@ module.exports = {
   getExam,
   addQuestionsToExam,
   deleteQuestionsFromExam,
-  generateExam
+  generateExam,
+  renameExam
 };
