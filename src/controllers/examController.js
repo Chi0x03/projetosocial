@@ -2,7 +2,59 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const generateExam = async (req, res) => {
-  
+  const { titulo, descritorIds, numQuestoesPorDescritor } = req.body;
+
+  try {
+    // Busca as questões que têm os descritores selecionados
+    const questoesPorDescritor = await prisma.questao.findMany({
+      where: {
+        descritores: {
+          some: {
+            id: {
+              in: descritorIds, // Seleciona as questões que têm os descritores
+            },
+          },
+        },
+      },
+      include: {
+        descritores: true, // Inclui os descritores na busca
+      },
+    });
+
+    // Organiza as questões por descritor
+    let questoesSelecionadas = [];
+
+    for (let descritorId of descritorIds) {
+      // Filtra questões para o descritor específico
+      const questoesFiltradas = questoesPorDescritor.filter(q =>
+        q.descritores.some(d => d.id === descritorId)
+      );
+
+      // Seleciona questões aleatórias para esse descritor
+      const questoesAleatorias = getRandomElements(questoesFiltradas, numQuestoesPorDescritor);
+      questoesSelecionadas.push(...questoesAleatorias);
+    }
+
+    // Cria a prova com as questões selecionadas
+    const prova = await prisma.prova.create({
+      data: {
+        titulo,
+        descritores: {
+          connect: descritorIds.map(id => ({ id })),
+        },
+        questoes: {
+          connect: questoesSelecionadas.map(questao => ({ id: questao.id })),
+        },
+      },
+      include: {
+        questoes: true, // Inclui as questões na resposta
+      },
+    });
+
+    res.status(201).json(prova);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao gerar a prova' });
+  }
 }
 
 // Cria uma nova prova
