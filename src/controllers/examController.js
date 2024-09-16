@@ -163,5 +163,6 @@ module.exports = {
   createExam,
   getExam,
   addQuestionsToExam,
-  deleteQuestionsFromExam
+  deleteQuestionsFromExam,
+  generateExam
 };
