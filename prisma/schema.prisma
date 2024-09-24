@@ -33,6 +33,7 @@ model Questao {
   alternativaD    String? // @db.VarChar(255)
   alternativaE    String? // @db.VarChar(255)
   respostaCorreta String // @db.Char(1)
+  explicacao      String
   publica         Boolean          @default(false)
   professorId     Int?
   descritorId     Int?
