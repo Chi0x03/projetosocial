@@ -7,13 +7,15 @@ const questionRoutes = require('./routes/questionRoutes');
 const authRoutes = require('./routes/authRoutes')
 
 app.use(express.json());
+app.set('views', './views');
+app.set('view engine', 'handlebars')
 
 // Configuração de sessão
 app.use(session({
-  secret: 'sua_chave_secreta_aqui69',
+  secret: 'sua_chave_secreta_aqui',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true } // Defina como true se estiver usando HTTPS
+  cookie: { secure: false } // Defina como true se estiver usando HTTPS
 }));
 
 // Rotas
