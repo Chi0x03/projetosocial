@@ -14,7 +14,7 @@ app.set('view engine', 'handlebars')
 app.use(session({
   secret: 'sua_chave_secreta_aqui',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: { secure: false } // Defina como true se estiver usando HTTPS
 }));
 
