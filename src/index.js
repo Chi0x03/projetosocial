@@ -1,14 +1,19 @@
 const express = require('express');
 const session = require('express-session');
 const app = express();
+
+const { engine } = require('express-handlebars');
+
 const examRoutes = require('./routes/examRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 // const descritorRoutes = require('./routes/descritorRoutes');
 const authRoutes = require('./routes/authRoutes')
 
 app.use(express.json());
+
 app.set('views', './views');
-app.set('view engine', 'handlebars')
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
 
 // Configuração de sessão
 app.use(session({
@@ -24,6 +29,9 @@ app.use('/questoes', questionRoutes);
 // app.use('/descritores', descritorRoutes);
 app.use('/auth', authRoutes); // Rota de autenticação
 
+app.get('/dashboard/questoes', async (req, res) => {
+  res.render('questoes.handlebars')
+})
 
 const port = 3000;
 app.listen(port, () => {
