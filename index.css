@@ -1,0 +1,177 @@
+@font-face {
+    font-family: DoubleBass;
+    src: url('Fonte/DoubleBass-regular-trial.ttf');
+}
+
+
+body {
+    background-image: url('IMG/fd_mtr.png'), radial-gradient(farthest-corner at center, rgba(36, 123, 160, 1) 0%, rgba(0, 100, 148, 1) 30%, rgba(19, 41, 61, 1) 100%);
+    background-repeat: repeat y, no-repeat;
+    background-position: 0% 0%, 100% 100%;
+    background-size: cover;
+    overflow: hidden;
+
+
+
+
+}
+
+
+
+
+
+#pf {
+    transition: transform 0.6s ease-out;
+
+}
+
+#pf :hover {
+    transform: scale(1.1);
+    transition: 0.6s ease-in;
+
+}
+
+#al {
+    transition: transform 0.6s ease-out;
+
+}
+
+#al :hover {
+    transform: scale(1.1);
+    transition: 0.8s;
+
+}
+
+
+#btn_prof {
+    width: 350px;
+    height: 80px;
+    margin-left: 10%;
+    margin-top: 1%
+}
+
+@keyframes moveHorizontally {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(0, -20px);
+        /* Para cima */
+    }
+
+    50% {
+        transform: translate(20px, 0);
+        /* Para a direita */
+    }
+
+    75% {
+        transform: translate(0, 20px);
+        /* Para baixo */
+    }
+}
+
+.elemento {
+    animation: mover 6s ease-in-out infinite;
+    /* Duração da animação */
+}
+
+
+
+.moving-image {
+    animation: moveHorizontally 5s infinite ease-in-out;
+    /* 3 segundos, loop infinito */
+}
+
+#pf :hover {
+    transform: scale(0.8);
+
+}
+
+#al :hover {
+    transform: scale(0.8);
+
+}
+
+/* 
+#btn_prof {
+    width: 280px;
+    height: 100px;
+    margin-left: 10%;
+    margin-top: -4%;
+} */
+
+
+
+
+
+#titulo1 {
+    font-family: DoubleBass;
+    color: rgb(254, 250, 250);
+    font-size: 165px;
+    margin-top: 4%;
+    text-shadow: 4px 5px 5px rgba(9, 8, 8, 0.5);
+
+}
+
+
+/* Links */
+a {
+    margin: 0px;
+    padding: 0px;
+}
+
+@media (max-width: 399.98px) {
+    #nome_pjt {
+        width: 380px;
+        height: 280px;
+    }
+
+    #btn_prof {
+        width: 200px;
+        height: 100px;
+        margin-left: 10%;
+        margin-top: -10%;
+    }
+
+    #btn_prof :hover {
+        transform: scale(1.5);
+
+    }
+}
+
+@media (min-width: 400px) and (max-width: 575.98px) {
+    /* #nome_pjt {
+        width: 380px;
+        height: 280px;
+    } */
+
+    #titulo1 {
+        font-size: 75px;
+        margin-top: 20%;
+
+    }
+
+    #btn_prof {
+        width: 200px;
+        height: 100px;
+        margin-left: 10%;
+        margin-top: -10%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    #nome_pjt {
+        width: 380px;
+        height: 280px;
+    }
+
+    #btn_prof {
+        width: 200px;
+        height: 100px;
+        margin-left: 10%;
+        margin-top: -10%;
+    }
+}

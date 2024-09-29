@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PublicClass</title>
+    <link rel="website icon" type="png" href="IMG/iconenav.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        @font-face {
+            font-family: DoubleBass;
+            src: url('Fonte/DoubleBass-regular-trial.ttf');
+        }
+
+        @font-face {
+            font-family: DoubleBassB;
+            src: url('Fonte/DoubleBass-Bold-trial.ttf');
+        }
+
+        body {
+            background-image: url('IMG/fd_mtr.png'), radial-gradient(farthest-corner at center, rgba(36, 123, 160, 1) 0%, rgba(0, 100, 148, 1) 30%, rgba(19, 41, 61, 1) 100%);
+            background-repeat: repeat y, repeat-y;
+            background-position: 0% 0%, 100% 100%;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #titulo1 {
+            font-family: DoubleBass;
+            color: rgb(254, 250, 250);
+            font-size: 165px;
+            margin-top: 4%;
+            text-shadow: 4px 5px 5px rgba(9, 8, 8, 0.5);
+        }
+
+        #pf {
+            transition: transform 0.6s ease-out;
+        }
+
+        #pf:hover {
+            transform: scale(1.1);
+            transition: 0.6s ease-in;
+        }
+
+        #al {
+            transition: transform 0.6s ease-out;
+        }
+
+        #al:hover {
+            transform: scale(1.1);
+            transition: 0.8s;
+        }
+
+        #btn_prof {
+            color: #ffffff;
+            background-color: #ff7402;
+            margin-left: 25%;
+            width: 300px;
+            height: 80px;
+            border-radius: 50px;
+            font-family: DoubleBassB;
+            font-size: 35px;
+            border: none;
+        }
+
+        #btn_al {
+            color: #ffffff;
+            background-color: #ff7402;
+            margin-left: 50%;
+            width: 300px;
+            height: 80px;
+            border-radius: 50px;
+            font-family: DoubleBassB;
+            font-size: 35px;
+            border: none;
+        }
+
+        #robo {
+            width: 350px;
+            height: 250px;
+            position: relative;
+            top: -100px;
+        }
+
+        a {
+            margin: 0px;
+            padding: 0px;
+            text-decoration: none;
+        }
+
+        @media (min-width: 300px) and (max-width: 399.98px) {
+            #titulo1 {
+                font-family: DoubleBass;
+                color: rgb(254, 250, 250);
+                font-size: 60px;
+                padding-top: 15%;
+                text-shadow: 4px 5px 5px rgba(9, 8, 8, 0.5);
+                text-align: center;
+                justify-content: center;
+                display: block;
+                margin-bottom: 15%;
+            }
+
+            #btn_prof,
+            #btn_al {
+                color: #ffffff;
+                background-color: #ff7402;
+                width: 210px;
+                height: 60px;
+                border-radius: 50px;
+                font-family: DoubleBassB;
+                font-size: 25px;
+                border: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto;
+            }
+
+            #robo {
+                display: none; /* Esconde a imagem original do robô */
+            }
+
+            #robo_alternativo {
+                display: block; /* Exibe a imagem alternativa */
+                width: 230px;
+                height: 150px;
+                margin: 20px auto 0; /* Centraliza a imagem */
+            }
+        }
+
+        @media (min-width: 400px) and (max-width: 575.98px) {
+            #titulo1 {
+                font-size: 75px;
+                margin-top: 20%;
+            }
+
+            #btn_prof {
+                width: 100px;
+                height: 80px;
+                margin-left: 10%;
+                margin-top: -10%;
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            #nome_pjt {
+                width: 380px;
+                height: 280px;
+            }
+
+            #btn_prof {
+                width: 200px;
+                height: 100px;
+                margin-left: 10%;
+                margin-top: -10%;
+            }
+        }
+
+        @keyframes moveHorizontally {
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(0, -20px); /* Para cima */
+            }
+
+            50% {
+                transform: translate(20px, 0); /* Para a direita */
+            }
+
+            75% {
+                transform: translate(0, 20px); /* Para baixo */
+            }
+        }
+
+        .elemento {
+            animation: mover 6s ease-in-out infinite; /* Duração da animação */
+        }
+
+        .moving-image {
+            animation: moveHorizontally 5s infinite ease-in-out; /* 5 segundos, loop infinito */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <section id="inicio">
+            <div class="container mt-4 mb-4">
+                <div class="row mt-4 mb-4">
+                    <div class="col-12 text-center" style="display: flex; justify-content: center; align-items: center;">
+                        <h1 class="tit text-center" id="titulo1">PUBLICCLASS</h1>
+                    </div>
+                </div>
+
+                <div class="row mb-3 w-100">
+                    <div class="col-12">
+                        <a href="prof.html" id="pf">
+                            <button id="btn_prof">Professor</button>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mb-4 w-100">
+                    <div class="col-12">
+                        <a href="aluno.html" id="al">
+                            <button id="btn_al">Aluno</button>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-4">
+                    <div class="moving-image col-3">
+                        <img src="IMG/robo_index.png" alt="Robô" id="robo">
+                        <img src="IMG/roboc.png" alt="Robô alternativo" id="robo_alternativo" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <main>
+        <!-- Conteúdo principal -->
+    </main>
+
+    <footer>
+        <!-- Rodapé -->
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
