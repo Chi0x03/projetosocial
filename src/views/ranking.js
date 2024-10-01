@@ -1,3 +1,5 @@
+//ta faltando conectar essa bct com o banco de dados, porem estou sem o database... daqui uns dias eu termino 100%, por enquanto é so a logica.
+
 class Jogador {
     constructor(nome, acertos, temposRespostas) {
         this.nome = nome;
