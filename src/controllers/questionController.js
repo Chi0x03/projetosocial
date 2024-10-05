@@ -9,7 +9,7 @@ const deleteQuestion = async (req, res) => {
     const deletedQuestion = await prisma.questao.delete({
       where: {
         id: questionId,
-        professorId
+        // professorId
       }
     })
     res.json(deleteQuestion)
@@ -20,9 +20,10 @@ const deleteQuestion = async (req, res) => {
 }
 
 const editQuestion = async (req, res) => {
-  const { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, descritorId, disciplina } = req.body;
+  let { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, descritorId, disciplina } = req.body;
   const questionId = parseInt(req.params.id)
   const professorId = req.session.professorId
+  descritorId = parseInt(descritorId)
   if (typeof questionId != 'number') res.status(500).json( {error: "Id não informado ou inválido"} )
   
   try {
@@ -54,9 +55,10 @@ const editQuestion = async (req, res) => {
 
 // Cria uma nova questão
 const createQuestion = async (req, res) => {
-  const { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta,  descritorId, disciplina } = req.body;
-  const professorId = req.session.professorId || 0;
-
+  let { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, explicacao, publica, descritorId, disciplina } = req.body;
+  const professorId = req.session.professorId || 1;
+  descritorId = parseInt(descritorId)
+  console.log(req.body)
   try {
     const novaQuestao = await prisma.questao.create({
       data: {
@@ -67,7 +69,8 @@ const createQuestion = async (req, res) => {
         alternativaD,
         alternativaE,
         respostaCorreta,
-        // publica,
+        publica,
+        explicacao,
         descritorId,
         disciplina,
         professorId
@@ -82,7 +85,7 @@ const createQuestion = async (req, res) => {
 
 // Lista todas as questões disponíveis para o professor logado
 const getAllQuestions = async (req, res) => {
-  const professorId = req.session.professorId || 0;
+  const professorId = req.session.professorId || 1;
 
   const questoes = await prisma.questao.findMany({
     where: {
@@ -99,7 +102,7 @@ const getAllQuestions = async (req, res) => {
 // Obtém uma questão específica
 const getQuestion = async (req, res) => {
   const id = parseInt(req.params.id);
-  const professorId = req.session.professorId || 0; // TÁ CERTO ISSO?
+  const professorId = req.session.professorId;
 
   const questao = await prisma.questao.findFirst({
     where: {
