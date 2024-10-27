@@ -96,6 +96,7 @@ const createExam = async (req, res) => {
 };
 
 // Obtém uma prova específica
+
 const getExam = async (req, res) => {
   const id = parseInt(req.params.id);
   const professorId = req.session.professorId;

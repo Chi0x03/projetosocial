@@ -11,6 +11,7 @@ const descritorRoutes = require('./routes/descritorRoutes');
 const authRoutes = require('./routes/authRoutes')
 
 app.use(express.json());
+app.use(express.static('./src/public'))
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
@@ -19,7 +20,7 @@ app.set('views', './src/views');
 app.use(session({
   secret: 'sua_chave_secreta_aqui',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: { secure: false } // Defina como true se estiver usando HTTPS
 }));
 
@@ -29,11 +30,19 @@ app.use('/questoes', questionRoutes);
 app.use('/descritores', descritorRoutes);
 app.use('/auth', authRoutes); // Rota de autenticação
 
-// app.get('/dashboard/questoes', (req, res) => {
-//   res.render('questoes')
-// })
+app.get('/', (req, res) => {
+  res.render('index')
+})
+
+app.get('/CadastroPG.html', (req, res) => {
+  res.render('CadastroPG')
+})
+
+app.get('/LoginPG.html', (req, res) => {
+  res.render('LoginPG')
+})
 
 const port = 8080;
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Servidor rodando em http://localhost:${port}`);
 });

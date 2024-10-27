@@ -1,0 +1,253 @@
+<!-- Estrutura pronta. Faltando ligar aos dados -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PublicClass Questões</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('IMG/fd_mtr.png'),
+            radial-gradient(farthest-corner at center, rgba(36, 123, 160, 1) 0%, rgba(0, 100, 148, 1) 30%, rgba(19, 41, 61, 1) 100%);
+            background-repeat: repeat y, repeat x;
+            background-position: 0% 0%, 100% 100%;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin-top: 10%;
+        }
+
+        .container-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .questao {
+            background-color: #10374a;
+            padding: 20px 30px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 400px;
+            overflow-y: auto;
+            opacity: 0.9;
+        }
+
+        .questao::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .questao::-webkit-scrollbar-track {
+            background: #0d2d3d;
+            border-radius: 10px;
+        }
+
+        .questao::-webkit-scrollbar-thumb {
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #0d2d3d;
+        }
+
+        .questao h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            padding: 15px;
+        }
+
+        .option-container {
+            margin-bottom: 10px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-btn input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+
+        .item1, .item2, .item3, .item4, .item5 {
+            background-color: #f48b31;
+            border-radius: 25px;
+        }
+
+        .confirmar {
+            background-color: #35d073;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%; /* Ocupa toda a largura das opções */
+            max-width: 600px; /* Limita o tamanho máximo do botão */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirmar:hover {
+            background-color: #2db363;
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        @media (max-width: 991.98px) {
+            .row {
+                flex-direction: column;
+            }
+
+            .col-questao, .col-opcoes {
+                flex: 0 0 100%;
+            }
+
+            .confirmar {
+                width: 100%; /* Garante que o botão continue responsivo */
+            }
+        }
+
+        .questao, .option-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .col-questao {
+            flex: 0 0 45%;
+        }
+
+        .col-opcoes {
+            flex: 0 0 50%;
+            margin-top: 5%;
+        }
+
+        #timer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: white;
+            font-size: 1.2rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        @media (min-width: 992px) {
+            .confirmar{
+                width: 200px;
+                margin-left: 60%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-content">
+        <div class="row">
+            <div class="col-questao mb-4">
+                <div class="robopgq">
+                    <img src="IMG/robopgq.png" alt="">
+                </div>
+                <div class="questao" id="questao">
+                    <h4></h4>
+                    <p></p>
+                    <h3></h3>
+                </div>
+            </div>
+
+            <div class="col-opcoes">
+                <div class="option-container">
+                    <label class="option-btn item1">
+                        <input type="radio" name="option" value="1" id="item1">
+                    </label>
+                </div>
+
+                <div class="option-container">
+                    <label class="option-btn item2">
+                        <input type="radio" name="option" value="2" id="item2">
+                    </label>
+                </div>
+
+                <div class="option-container">
+                    <label class="option-btn item3">
+                        <input type="radio" name="option" value="3" id="item3">
+                    </label>
+                </div>
+
+                <div class="option-container">
+                    <label class="option-btn item4">
+                        <input type="radio" name="option" value="4" id="item4">
+                    </label>
+                </div>
+
+                <div class="option-container">
+                    <label class="option-btn item5">
+                        <input type="radio" name="option" value="5" id="item5">
+                    </label>
+                </div>
+
+                <div class="btn-container">
+                    <button class="confirmar mb-4" id="confirm">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="timer">00:00</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let seconds = 0;
+        let minutes = 0;
+
+        const timerElement = document.getElementById('timer');
+
+        setInterval(() => {
+            seconds++;
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+            }
+
+            let timeString = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            timerElement.textContent = timeString;
+        }, 1000);
+    </script>
+</body>
+
+</html>

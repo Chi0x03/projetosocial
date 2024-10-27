@@ -29,6 +29,7 @@ router.post('/register', async (req, res) => {
 
     novoProfessor.senha = undefined
 
+    req.session.professorId = novoProfessor.id;
     res.status(201).json({ message: 'Usuário criado com sucesso', professor: novoProfessor });
   } catch (error) {
     res.status(500).json({ error: error.message });

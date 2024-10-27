@@ -53,7 +53,7 @@ const editQuestion = async (req, res) => {
   }
 }
 
-// Cria uma nova questão
+
 const createQuestion = async (req, res) => {
   let { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, explicacao, publica, descritorId, disciplina } = req.body;
   const professorId = req.session.professorId || 1;

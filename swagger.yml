@@ -1,0 +1,420 @@
+openapi: 3.0.0
+info:
+  title: API de Gestão de Provas
+  description: API para criação, edição e gerenciamento de provas, questões, descritores.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Autenticação
+    description: Endpoints relacionados ao registro e login de usuários.
+  - name: Descritores
+    description: Endpoints para gerenciar descritores.
+  - name: Provas
+    description: Endpoints para gerenciar provas.
+  - name: Questões
+    description: Endpoints para gerenciar questões.
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Autenticação
+      summary: Registra um novo usuário.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Usuário registrado com sucesso.
+
+  /auth/login:
+    post:
+      tags:
+        - Autenticação
+      summary: Realiza o login do usuário.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Login bem-sucedido.
+
+  /auth/logout:
+    post:
+      tags:
+        - Autenticação
+      summary: Realiza o logout do usuário.
+      responses:
+        '200':
+          description: Logout bem-sucedido.
+  
+  /descritores:
+    get:
+      tags:
+        - Descritores
+      summary: Retorna todos os descritores.
+      responses:
+        '200':
+          description: Lista de descritores retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Descritor'
+
+    post:
+      tags:
+        - Descritores
+      summary: Cria um novo descritor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ano:
+                  type: string
+                codigo:
+                  type: string
+                descricao:
+                  type: string
+                disciplina:
+                  type: string
+      responses:
+        '201':
+          description: Descritor criado com sucesso.
+      
+  /descritores/{id}:
+    post:
+      tags:
+        - Descritores
+      summary: Edita um descritor existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ano:
+                  type: string
+                codigo:
+                  type: string
+                descricao:
+                  type: string
+                disciplina:
+                  type: string
+      responses:
+        '200':
+          description: Descritor editado com sucesso.
+    delete:
+      tags:
+        - Descritores
+      summary: Remove um descritor específico.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ano:
+                  type: string
+                codigo:
+                  type: string
+                descricao:
+                  type: string
+                disciplina:
+                  type: string
+      responses:
+        '200':
+          description: Descritor editado com sucesso.
+  
+  /provas:
+    get:
+      tags:
+        - Provas
+      summary: Retorna todas as provas.
+      responses:
+        '200':
+          description: Lista de provas retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prova'
+    
+    post:
+      tags:
+        - Provas
+      summary: Cria uma nova prova.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                professorId:
+                  type: integer
+      responses:
+        '201':
+          description: Prova criada com sucesso.
+  
+  /provas/{id}:
+    get:
+      tags:
+        - Provas
+      summary: Retorna uma prova específica.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Prova retornada com sucesso.
+  
+    post:
+      tags:
+        - Provas
+      summary: Renomeia uma prova.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                novoTitulo:
+                  type: string
+      responses:
+        '200':
+          description: Prova renomeada com sucesso.
+
+  /provas/{id}/questoes:
+    post:
+      tags:
+        - Provas
+      summary: Adiciona questões a uma prova.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questoes:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Questões adicionadas com sucesso.
+
+    delete:
+      tags:
+        - Provas
+      summary: Remove questões de uma prova.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questoes:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Questões removidas com sucesso.
+
+  /questoes:
+    get:
+      tags:
+        - Questões
+      summary: Retorna todas as questões.
+      responses:
+        '200':
+          description: Lista de questões retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Questao'
+    
+    post:
+      tags:
+        - Questões
+      summary: Cria uma nova questão.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enunciado:
+                  type: string
+                alternativaA:
+                  type: string
+                alternativaB:
+                  type: string
+                alternativaC:
+                  type: string
+                alternativaD:
+                  type: string
+                alternativaE:
+                  type: string
+                respostaCorreta:
+                  type: string
+                explicacao:
+                  type: string
+                publica:
+                  type: boolean
+                descritorId:
+                  type: integer
+      responses:
+        '201':
+          description: Questão criada com sucesso.
+
+  /questoes/{id}:
+    get:
+      tags:
+        - Questões
+      summary: Retorna uma questão específica.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Questão retornada com sucesso.
+      
+    delete:
+      tags:
+        - Questões
+      summary: Remove uma questão específica.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Questão removida com sucesso.
+
+components:
+  schemas:
+    Descritor:
+      type: object
+      properties:
+        id:
+          type: integer
+        ano:
+          type: string
+        codigo:
+          type: string
+        descricao:
+          type: string
+        disciplina:
+          type: string
+
+    Prova:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        dataCriacao:
+          type: string
+          format: date-time
+        professorId:
+          type: integer
+
+    Questao:
+      type: object
+      properties:
+        id:
+          type: integer
+        enunciado:
+          type: string
+        alternativaA:
+          type: string
+        alternativaB:
+          type: string
+        alternativaC:
+          type: string
+        alternativaD:
+          type: string
+        alternativaE:
+          type: string
+        respostaCorreta:
+          type: string
+        explicacao:
+          type: string
+        publica:
+          type: boolean
