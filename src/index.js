@@ -5,10 +5,13 @@ const app = express();
 app.use(cors());
 
 
-// const examRoutes = require('./routes/examRoutes');
+const examRoutes = require('./routes/examRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const descritorRoutes = require('./routes/descritorRoutes');
 const authRoutes = require('./routes/authRoutes')
+const teacherRoutes = require('./routes/teacherRoutes')
+
+const isAuthenticated = require('./middlewares/authMiddleware')
 
 app.use(express.json());
 app.use(express.static('./src/public'))
@@ -25,9 +28,10 @@ app.use(session({
 }));
 
 // Rotas
-// app.use('/provas', examRoutes);
+app.use('/provas', examRoutes);
 app.use('/questoes', questionRoutes);
 app.use('/descritores', descritorRoutes);
+app.use('/professor', teacherRoutes)
 app.use('/auth', authRoutes); // Rota de autenticação
 
 app.get('/', (req, res) => {
@@ -40,6 +44,10 @@ app.get('/CadastroPG.html', (req, res) => {
 
 app.get('/LoginPG.html', (req, res) => {
   res.render('LoginPG')
+})
+
+app.get('/perfil_prof.html', isAuthenticated , (req, res) => {
+  res.render('perfil_prof')
 })
 
 const port = 8080;

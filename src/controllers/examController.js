@@ -20,6 +20,11 @@ const renameExam = async (req, res) => {
   }
 }
 
+function getRandomElements(arr, num) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+}
+
 const generateExam = async (req, res) => {
   const { titulo, descritorIds, numQuestoesPorDescritor } = req.body;
 
@@ -27,42 +32,44 @@ const generateExam = async (req, res) => {
     // Busca as questões que têm os descritores selecionados
     const questoesPorDescritor = await prisma.questao.findMany({
       where: {
-        descritores: {
-          some: {
-            id: {
-              in: descritorIds, // Seleciona as questões que têm os descritores
-            },
-          },
-        },
+        descritorId: { in: descritorIds }, // Seleciona questões com qualquer um dos descritores fornecidos
       },
       include: {
-        descritores: true, // Inclui os descritores na busca
+        descritor: true, // Inclui o descritor na resposta, se necessário
       },
     });
+
+    // Log das questões encontradas
+    console.log("Questões encontradas:", questoesPorDescritor);
 
     // Organiza as questões por descritor
     let questoesSelecionadas = [];
 
     for (let descritorId of descritorIds) {
       // Filtra questões para o descritor específico
-      const questoesFiltradas = questoesPorDescritor.filter(q =>
-        q.descritores.some(d => d.id === descritorId)
-      );
+      const questoesFiltradas = questoesPorDescritor.filter(q => q.descritorId === descritorId);
+
+      // Log das questões filtradas
+      console.log(`Questões filtradas para o descritor ${descritorId}:`, questoesFiltradas);
 
       // Seleciona questões aleatórias para esse descritor
       const questoesAleatorias = getRandomElements(questoesFiltradas, numQuestoesPorDescritor);
+      // Log das questões aleatórias
+      console.log(`Questões aleatórias para o descritor ${descritorId}:`, questoesAleatorias);
+      
       questoesSelecionadas.push(...questoesAleatorias);
     }
+
+    // Log das questões selecionadas
+    console.log("Questões selecionadas para a prova:", questoesSelecionadas);
 
     // Cria a prova com as questões selecionadas
     const prova = await prisma.prova.create({
       data: {
         titulo,
-        descritores: {
-          connect: descritorIds.map(id => ({ id })),
-        },
+        dataCriacao: new Date(),
         questoes: {
-          connect: questoesSelecionadas.map(questao => ({ id: questao.id })),
+          connect: questoesSelecionadas.map(questao => ({ id: questao.id })), // Conecta as questões
         },
       },
       include: {
@@ -72,9 +79,11 @@ const generateExam = async (req, res) => {
 
     res.status(201).json(prova);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Erro ao gerar a prova' });
   }
-}
+};
+
 
 // Cria uma nova prova
 const createExam = async (req, res) => {
@@ -96,7 +105,6 @@ const createExam = async (req, res) => {
 };
 
 // Obtém uma prova específica
-
 const getExam = async (req, res) => {
   const id = parseInt(req.params.id);
   const professorId = req.session.professorId;
@@ -140,9 +148,10 @@ const addQuestionsToExam = async (req, res) => {
   }
 
   try {
-    const provasQuestoes = questaoIds.map(id => ({
+    const provasQuestoes = questaoIds.map((id, index) => ({
       provaId,
-      questaoId: id
+      questaoId: id,
+      numeroQuestao: index + 1
     }));
 
     await prisma.provasQuestao.createMany({

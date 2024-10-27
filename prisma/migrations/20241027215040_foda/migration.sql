@@ -18,7 +18,9 @@ CREATE TABLE "Professor" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nome" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "senha" TEXT NOT NULL
+    "senha" TEXT NOT NULL,
+    "instituicao" TEXT,
+    "disciplina" TEXT
 );
 
 -- CreateTable
@@ -53,7 +55,7 @@ CREATE TABLE "Questao" (
 CREATE TABLE "Prova" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "titulo" TEXT NOT NULL,
-    "dataCriacao" DATETIME NOT NULL,
+    "dataCriacao" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "professorId" INTEGER,
     CONSTRAINT "Prova_professorId_fkey" FOREIGN KEY ("professorId") REFERENCES "Professor" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -62,10 +64,23 @@ CREATE TABLE "Prova" (
 CREATE TABLE "ProvasQuestoes" (
     "provaId" INTEGER NOT NULL,
     "questaoId" INTEGER NOT NULL,
+    "numeroQuestao" INTEGER NOT NULL,
 
     PRIMARY KEY ("provaId", "questaoId"),
     CONSTRAINT "ProvasQuestoes_provaId_fkey" FOREIGN KEY ("provaId") REFERENCES "Prova" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "ProvasQuestoes_questaoId_fkey" FOREIGN KEY ("questaoId") REFERENCES "Questao" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "RespostasDeProvas" (
+    "provaId" INTEGER NOT NULL,
+    "questaoId" INTEGER NOT NULL,
+    "aluno" TEXT NOT NULL,
+    "itemMarcado" TEXT NOT NULL,
+
+    PRIMARY KEY ("provaId", "questaoId"),
+    CONSTRAINT "RespostasDeProvas_provaId_fkey" FOREIGN KEY ("provaId") REFERENCES "Prova" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "RespostasDeProvas_questaoId_fkey" FOREIGN KEY ("questaoId") REFERENCES "Questao" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
     novoProfessor.senha = undefined
 
     req.session.professorId = novoProfessor.id;
-    res.status(201).json({ message: 'Usuário criado com sucesso', professor: novoProfessor });
+    res.redirect('/perfil_prof.html')
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
     }
 
     req.session.professorId = professor.id;
-    res.json({ message: 'Login bem-sucedido' });
+    res.redirect('/perfil_prof.html')
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "sqlite"
-  url       = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
   // directUrl = env("DIRECT_URL")
 }
 
@@ -21,12 +21,14 @@ model Ranking {
 }
 
 model Professor {
-  id       Int       @id @default(autoincrement())
-  nome     String // @db.VarChar(100)
-  email    String    @unique // @db.VarChar(100)
-  senha    String // @db.VarChar(255)
-  questoes Questao[]
-  provas   Prova[]
+  id          Int       @id @default(autoincrement())
+  nome        String // @db.VarChar(100)
+  email       String    @unique // @db.VarChar(100)
+  senha       String // @db.VarChar(255)
+  instituicao String?
+  disciplina  String?
+  questoes    Questao[]
+  provas      Prova[]
 }
 
 model Descritor {
@@ -39,38 +41,52 @@ model Descritor {
 }
 
 model Questao {
-  id              Int              @id @default(autoincrement())
-  enunciado       String // @db.Text
-  alternativaA    String? // @db.VarChar(255)
-  alternativaB    String? // @db.VarChar(255)
-  alternativaC    String? // @db.VarChar(255)
-  alternativaD    String? // @db.VarChar(255)
-  alternativaE    String? // @db.VarChar(255)
-  respostaCorreta String // @db.Char(1)
-  explicacao      String
-  publica         Boolean          @default(false)
-  professorId     Int?
-  descritorId     Int?
-  disciplina      String
-  professor       Professor?       @relation(fields: [professorId], references: [id])
-  descritor       Descritor?       @relation(fields: [descritorId], references: [id])
-  provas          ProvasQuestoes[]
+  id                Int                 @id @default(autoincrement())
+  enunciado         String // @db.Text
+  alternativaA      String? // @db.VarChar(255)
+  alternativaB      String? // @db.VarChar(255)
+  alternativaC      String? // @db.VarChar(255)
+  alternativaD      String? // @db.VarChar(255)
+  alternativaE      String? // @db.VarChar(255)
+  respostaCorreta   String // @db.Char(1)
+  explicacao        String
+  publica           Boolean             @default(false)
+  professorId       Int?
+  descritorId       Int?
+  disciplina        String
+  professor         Professor?          @relation(fields: [professorId], references: [id])
+  descritor         Descritor?          @relation(fields: [descritorId], references: [id])
+  provas            ProvasQuestoes[]
+  RespostasDeProvas RespostasDeProvas[]
 }
 
 model Prova {
-  id          Int              @id @default(autoincrement())
-  titulo      String // @db.VarChar(100)
-  dataCriacao DateTime // @db.Date
-  professorId Int?
-  professor   Professor?       @relation(fields: [professorId], references: [id])
-  questoes    ProvasQuestoes[]
+  id                Int                 @id @default(autoincrement())
+  titulo            String // @db.VarChar(100)
+  dataCriacao       DateTime            @default(now()) // @db.Date
+  professorId       Int?
+  professor         Professor?          @relation(fields: [professorId], references: [id])
+  questoes          ProvasQuestoes[]
+  RespostasDeProvas RespostasDeProvas[]
 }
 
 model ProvasQuestoes {
-  provaId   Int
-  questaoId Int
-  prova     Prova   @relation(fields: [provaId], references: [id])
-  questao   Questao @relation(fields: [questaoId], references: [id])
+  provaId       Int
+  questaoId     Int
+  prova         Prova   @relation(fields: [provaId], references: [id])
+  questao       Questao @relation(fields: [questaoId], references: [id])
+  numeroQuestao Int
+
+  @@id([provaId, questaoId])
+}
+
+model RespostasDeProvas {
+  provaId     Int
+  questaoId   Int
+  prova       Prova   @relation(fields: [provaId], references: [id])
+  questao     Questao @relation(fields: [questaoId], references: [id])
+  aluno       String
+  itemMarcado String
 
   @@id([provaId, questaoId])
 }

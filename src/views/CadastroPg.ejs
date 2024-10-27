@@ -42,6 +42,7 @@
         try {
             // Faz a requisição POST enviando os dados como JSON
             const response = await axios.post('auth/register', data);
+            window.location.href = "/perfil_prof.html"
             console.log('Resposta:', response.data);
         } catch (error) {
             console.error('Erro ao enviar o formulário:', error);
