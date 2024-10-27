@@ -344,13 +344,30 @@
                     <div class="form-container">
                         <form id="formUpdate">
 
+                            <div class="row align-items-center mb-4">
+                                <label for="nome" class="ml-4">Nome:</label>
+                                <div class="form-group d-flex align-items-center">
+
+                                    <img class="perfil_ft mr-2" src="" alt="" style="width: 40px; height: 40px;"
+                                        onclick="openModal()">
+                                    <input type="text" class="form-control" id="nomePerfil" value="">
+                                    <button type="submit" class="btn btn-save">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                            <path
+                                                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div class="row mb-4">
                                 <div class="form-group col-12 col-sm-12 col-md-6">
                                     <label for="disciplina">Disciplina:</label>
                                     <select class="form-control w-100" name="disciplina" id="disciplina">
                                         <option></option>
-                                        <option>Português</option>
-                                        <option>Matemática</option>
+                                        <option value="Português">Português</option>
+                                        <option value="Matemática">Matemática</option>
                                     </select>
                                 </div>
 
@@ -359,13 +376,33 @@
                                     <label for="instituicao">Instituição:</label>
                                     <select class="form-control" name="instituicao" id="instituicao">
                                         <option></option>
-                                        <option>EEEP Maria Môsa da Silva</option>
-                                        <option>EEMTI Josefa Clementino de Oliveira</option>
-                                        <option>EEMTI Almir Pinto</option>
+                                        <option value="EEEP Maria Môsa da Silva">EEEP Maria Môsa da Silva</option>
+                                        <option value="EEMTI Josefa Clementino de Oliveira">EEMTI Josefa Clementino de
+                                            Oliveira</option>
+                                        <option value="EEMTI Almir Pinto">EEMTI Almir Pinto</option>
                                     </select>
                                 </div>
 
                             </div>
+
+                            <div class="row">
+                                <div class="form-group col-12 col-sm-12 col-md-6">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control w-100" id="email">
+                                </div>
+                                <div class="form-group col-12 col-sm-12 col-md-6">
+                                    <label for="senha">Senha:</label>
+                                    <div class="input-group d-flex align-items-center w-100">
+                                        <input type="password" class="form-control" id="senha" value=""
+                                            style="border-radius: 25px;">
+                                        <span class="input-group-text" id="togglePassword"
+                                            style="text-decoration: none;">
+                                            <i class="fa fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
 
 
                             <div class="text-end mt-4">
@@ -404,6 +441,19 @@
 
     <script>
 
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('senha');
+            const icon = this.querySelector('i');
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            icon.classList.toggle('fa-eye-slash');
+        });
+
+    </script>
+
+    <script>
+
         function salvarDados() {
 
         }
@@ -425,18 +475,19 @@
         }
 
         /* Função para iniciar a animação de fade-out ao clicar no botão "Entrar no jogo" */
-        // document.getElementById("startButton").addEventListener("click", function (event) {
-        //     event.preventDefault(); /* Impede o envio padrão do formulário */
+        document.getElementById("startButton").addEventListener("click", function (event) {
+            event.preventDefault(); /* Impede o envio padrão do formulário */
 
-        //     /* Aplica a classe de fade-out ao corpo da página */
-        //     document.body.classList.add('fade-out');
+            /* Aplica a classe de fade-out ao corpo da página */
+            document.body.classList.add('fade-out');
 
-        //     /* Após 1 segundo (tempo da animação), redireciona para a página "boa_sorte.html" */
-        //     setTimeout(function () {
-        //         window.location.href = "boa_sorte.html"; /* Redireciona para outra página */
-        //     }, 1000); /* Tempo em milissegundos da animação (1 segundo) */
-        // });
+            /* Após 1 segundo (tempo da animação), redireciona para a página "boa_sorte.html" */
+            setTimeout(function () {
+                window.location.href = "boa_sorte.html"; /* Redireciona para outra página */
+            }, 1000); /* Tempo em milissegundos da animação (1 segundo) */
+        });
     </script>
+
     <script>
         const form = document.querySelector('#formUpdate');
 
@@ -459,14 +510,30 @@
         });
 
         axios.get('/professor')
-        .then((response) => {
-            const nome = document.querySelector("#nomeProfessor")
-            nome.innerHTML = response.data.nome
-            console.log(response)
-        })
-        .catch((e) => {
-            console.log(e);
-        })
+            .then((response) => {
+                const nome = document.querySelector("#nomeProfessor");
+                const nomeNoPerfil = document.querySelector("#nomePerfil");
+                const disciplina = document.querySelector("#disciplina");
+                const instituicao = document.querySelector("#instituicao");
+                const email = document.querySelector("#email");
+                const senha = document.querySelector("#senha");
+
+                // Campos de texto
+                nome.innerHTML = response.data.nome;
+                nomeNoPerfil.value = response.data.nome;
+                email.value = response.data.email;
+                senha.value = response.data.senha;
+
+                // Campos de select
+                disciplina.value = response.data.disciplina;
+                instituicao.value = response.data.instituicao;
+
+                console.log(response.data);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+
 
 
     </script>
