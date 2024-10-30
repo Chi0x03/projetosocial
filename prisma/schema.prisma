@@ -8,16 +8,15 @@ datasource db {
   // directUrl = env("DIRECT_URL")
 }
 
-model Aluno {
-  id Int @id @default(autoincrement())
-}
-
-model Conquistas {
-  id Int @id @default(autoincrement())
-}
-
 model Ranking {
-  id Int @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
+  provaId         Int
+  nomeAluno       String
+  totalAcertos    Int
+  tempoDeResposta Int // Representa o tempo total de resposta em segundos
+  dataCriacao     DateTime @default(now()) // Data de criação do ranking
+
+  prova Prova @relation(fields: [provaId], references: [id])
 }
 
 model Professor {
@@ -32,12 +31,13 @@ model Professor {
 }
 
 model Descritor {
-  id         Int       @id @default(autoincrement())
-  ano        String
-  codigo     String //@db.VarChar(100)
-  descricao  String //@db.Text
-  disciplina String
-  questoes   Questao[]
+  id                Int                 @id @default(autoincrement())
+  ano               String
+  codigo            String //@db.VarChar(100)
+  descricao         String //@db.Text
+  disciplina        String
+  questoes          Questao[]
+  RespostasDeProvas RespostasDeProvas[]
 }
 
 model Questao {
@@ -68,6 +68,7 @@ model Prova {
   professor         Professor?          @relation(fields: [professorId], references: [id])
   questoes          ProvasQuestoes[]
   RespostasDeProvas RespostasDeProvas[]
+  Ranking           Ranking[]
 }
 
 model ProvasQuestoes {
@@ -75,23 +76,21 @@ model ProvasQuestoes {
   questaoId     Int
   prova         Prova   @relation(fields: [provaId], references: [id])
   questao       Questao @relation(fields: [questaoId], references: [id])
-  numeroQuestao Int
 
   @@id([provaId, questaoId])
 }
 
 model RespostasDeProvas {
-  provaId     Int
-  questaoId   Int
-  prova       Prova   @relation(fields: [provaId], references: [id])
-  questao     Questao @relation(fields: [questaoId], references: [id])
-  aluno       String
-  itemMarcado String
+  provaId       Int
+  questaoId     Int
+  descritorId   Int
+  prova         Prova     @relation(fields: [provaId], references: [id])
+  questao       Questao   @relation(fields: [questaoId], references: [id])
+  descritor     Descritor @relation(fields: [descritorId], references: [id])
+  numeroQuestao Int
+  aluno         String
+  itemMarcado   String
+  acertou       Boolean
 
   @@id([provaId, questaoId])
 }
-
-// enum Disciplina {
-//   PORTUGUES
-//   MATEMATICA
-// }
