@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>PublicClass</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: 'DoubleBass';
+            src: url('Fonte/DoubleBass-regular-trial.ttf');
+        }
+
+        @font-face {
+            font-family: 'DoubleBassB';
+            src: url('Fonte/DoubleBass-Bold-trial.ttf');
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('IMG/fundo.png');
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            /* Impede a rolagem da página inteira */
+            display: flex;
+        }
+
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+
+        .esquerda,
+        .direita {
+            background-color: rgba(33, 83, 106, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .esquerda {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alternativas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .alternativa {
+            background-color: #f3751e;
+            border-radius: 10px;
+            height: 150px;
+            position: relative;
+            font-size: 100px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #1979aa;
+            border-radius: 50%;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .direita {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .status-header {
+            background-color: #f3751e;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .status-list {
+            width: 100%;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(39, 110, 143, 0.7);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        .status {
+            margin-left: auto;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        .avatar {
+            margin-right: 10px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="esquerda" style="width: 100%;">
+
+            <img src="IMG/public.png" height="130px" width="130px" style="margin-top: 2%; margin-bottom: 2%;">
+            <h1 class="titulo"
+                style="text-align: center; margin-bottom: 5%;font-size: 42px; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+                Quantidade de
+                respostas por alternativa <br> Questão
+                <span id="numQuestao">1</span>
+            </h1>
+
+            <div class="alternativas">
+                <div class="alternativa">
+                    <div class="" style="font-family: 'DoubleBassB';">
+                        A
+                    </div>
+                    <div class="count">10</div>
+                </div>
+                <div class="alternativa">
+                    <div class="" style="font-family: 'DoubleBassB';">
+                        B
+                    </div>
+                    <div class="count">2</div>
+                </div>
+                <div class="alternativa">
+                    <div class="" style="font-family: 'DoubleBassB';">
+                        C
+                    </div>
+                    <div class="count">7</div>
+                </div>
+                <div class="alternativa">
+                    <div class="" style="font-family: 'DoubleBassB';">
+                        D
+                    </div>
+                    <div class="count">1</div>
+                </div>
+                <div class="alternativa">
+                    <div class="" style="font-family: 'DoubleBassB';">
+                        E
+                    </div>
+                    <div class="count">0</div>
+                </div>
+                <a id="proximaQuestao" style="text-decoration: none;">
+                    <div class="alternativa" style="background-color: #e74c3c; font-size: 40px;">
+                        <h5> Próxima questão</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="direita">
+            <div class="status-header">
+                <h3>Status das Respostas</h3>
+            </div>
+            <div class="status-header" style="background-color: #e74c3c;">
+                <h3><span id="numAlunos"></span> Respostas restantes</h3>
+            </div>
+            <div class="status-list">
+                <div class="status-item">
+                    <div class="avatar"> <img src="IMG/avatar.png" height="40px" width="40px"> </div>
+                    João Pedro
+                    <div class="status check">
+                        <img src="IMG/correto.png" height="35px" width="35px">
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="avatar"> <img src="IMG/avatar.png" height="40px" width="40px"> </div>
+                    Isabeli
+                    <div class="status question">
+                        <img src="IMG/interrogacao.png" height="35px" width="35px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    function setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+    }
+
+    function getCookie(name) {
+        const decodedCookies = decodeURIComponent(document.cookie);
+        const cookiesArray = decodedCookies.split('; ');
+        for (const cookie of cookiesArray) {
+            const [key, value] = cookie.split('=');
+            if (key === name) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+</script>
+
+<script>
+    const socket = io();
+    let prova = null
+    const params = new URLSearchParams(window.location.search);
+    let questionIndex = 0;
+    const proximaQuestao = document.getElementById('proximaQuestao');
+
+    provaId = params.get('provaId');
+    if (provaId) {
+        setCookie('provaId', provaId, 1);
+    } else {
+        provaId = getCookie('provaId');
+    }
+
+    sala = params.get('sala');
+    if (sala) {
+        setCookie('sala', sala, 1);
+    } else {
+        sala = getCookie('sala');
+    }
+
+    // Captura o nome dos parâmetros ou do cookie
+    let nome = params.get('nome');
+    if (nome) {
+        setCookie('nome', nome, 1);
+    } else {
+        nome = getCookie('nome');
+    }
+
+
+    socket.emit('join-quiz', { roomId: sala, nome });
+
+    // Fetch exam data
+    axios.get('/provas/' + provaId)
+        .then((response) => {
+            prova = response.data;
+            console.log(prova);
+
+            // Ensure that prova and questoes exist before emitting
+            if (prova && prova.questoes && prova.questoes.length > 0) {
+                socket.emit('primeira-questao', { roomId: sala, provaId: provaId, question: prova.questoes[0] });
+            } else {
+                console.error('Prova ou questões não disponíveis');
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao buscar prova:', error);
+        });
+
+    socket.on('alunos-count', ({ count }) => {
+        console.log(count);
+        document.getElementById('numAlunos').innerHTML = count - 1;
+    });
+
+
+    proximaQuestao.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        questionIndex++;
+        if (questionIndex < prova.questoes.length) {
+            document.getElementById('numQuestao').innerHTML = questionIndex + 1;
+            socket.emit('next-question', { roomId: sala, currentQuestion: prova.questoes[questionIndex] });
+        } else {
+            console.log('Não há mais questões.');
+        }
+    });
+
+</script>
+
+</html>

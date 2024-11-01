@@ -13,7 +13,7 @@ model Ranking {
   provaId         Int
   nomeAluno       String
   totalAcertos    Int
-  tempoDeResposta Int // Representa o tempo total de resposta em segundos
+  tempoDeResposta BigInt // Representa o tempo total de resposta em segundos
   dataCriacao     DateTime @default(now()) // Data de criação do ranking
 
   prova Prova @relation(fields: [provaId], references: [id])
@@ -37,7 +37,6 @@ model Descritor {
   descricao         String //@db.Text
   disciplina        String
   questoes          Questao[]
-  RespostasDeProvas RespostasDeProvas[]
 }
 
 model Questao {
@@ -83,11 +82,9 @@ model ProvasQuestoes {
 model RespostasDeProvas {
   provaId       Int
   questaoId     Int
-  descritorId   Int
   prova         Prova     @relation(fields: [provaId], references: [id])
   questao       Questao   @relation(fields: [questaoId], references: [id])
-  descritor     Descritor @relation(fields: [descritorId], references: [id])
-  numeroQuestao Int
+  dataDeProva   DateTime  @default(now())
   aluno         String
   itemMarcado   String
   acertou       Boolean

@@ -26,63 +26,69 @@ function getRandomElements(arr, num) {
 }
 
 const generateExam = async (req, res) => {
-  const { titulo, descritorIds, numQuestoesPorDescritor } = req.body;
+  let { titulo, descritorIds, numQuestoesPorDescritor } = req.body;
+  numQuestoesPorDescritor = parseInt(numQuestoesPorDescritor);
 
   try {
-    // Busca as questões que têm os descritores selecionados
     const questoesPorDescritor = await prisma.questao.findMany({
       where: {
-        descritorId: { in: descritorIds }, // Seleciona questões com qualquer um dos descritores fornecidos
+        descritorId: { in: descritorIds },
       },
       include: {
-        descritor: true, // Inclui o descritor na resposta, se necessário
+        descritor: true,
       },
     });
 
-    // Log das questões encontradas
-    console.log("Questões encontradas:", questoesPorDescritor);
-
-    // Organiza as questões por descritor
     let questoesSelecionadas = [];
 
     for (let descritorId of descritorIds) {
-      // Filtra questões para o descritor específico
       const questoesFiltradas = questoesPorDescritor.filter(q => q.descritorId === descritorId);
 
-      // Log das questões filtradas
-      console.log(`Questões filtradas para o descritor ${descritorId}:`, questoesFiltradas);
-
-      // Seleciona questões aleatórias para esse descritor
       const questoesAleatorias = getRandomElements(questoesFiltradas, numQuestoesPorDescritor);
-      // Log das questões aleatórias
-      console.log(`Questões aleatórias para o descritor ${descritorId}:`, questoesAleatorias);
-      
+
       questoesSelecionadas.push(...questoesAleatorias);
     }
 
-    // Log das questões selecionadas
-    console.log("Questões selecionadas para a prova:", questoesSelecionadas);
-
-    // Cria a prova com as questões selecionadas
+    // Cria a prova primeiro, sem conectar as questões
     const prova = await prisma.prova.create({
       data: {
         titulo,
         dataCriacao: new Date(),
-        questoes: {
-          connect: questoesSelecionadas.map(questao => ({ id: questao.id })), // Conecta as questões
-        },
+        professorId: req.session.professorId
+        // Não conecte as questões aqui
       },
       include: {
-        questoes: true, // Inclui as questões na resposta
+        questoes: true, // Inclui questões, mas ainda não tem nenhuma
       },
     });
 
-    res.status(201).json(prova);
+    // Agora conecta as questões à prova já criada
+    await prisma.provasQuestoes.createMany({
+      data: questoesSelecionadas.map((questao) => ({
+        provaId: prova.id,
+        questaoId: questao.id,
+      })),
+    });
+
+    // Recarrega a prova com as questões
+    const provaComQuestoes = await prisma.prova.findUnique({
+      where: { id: prova.id },
+      include: {
+        questoes: {
+          include: {
+            questao: true, // Inclui todos os dados da questão
+          },
+        },
+      },
+    });
+
+    res.status(201).json(provaComQuestoes);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao gerar a prova' });
   }
 };
+
 
 
 // Cria uma nova prova
@@ -111,32 +117,56 @@ const getExam = async (req, res) => {
 
   const prova = await prisma.prova.findUnique({
     include: {
-      questoes: true
+      questoes: {
+        select: {
+          questao: { // Substitua 'questao' pelo nome correto do relacionamento
+            select: {
+              id: true,
+              enunciado: true,
+              alternativaA: true,
+              alternativaB: true,
+              alternativaC: true,
+              alternativaD: true,
+              alternativaE: true,
+              respostaCorreta: true,
+              explicacao: true,
+              publica: true,
+              professorId: true,
+              descritorId: true,
+              disciplina: true,
+            }
+          }
+        }
+      }
     },
     where: { id, professorId }
   });
 
   if (prova) {
-    res.json(prova);
+    res.json({
+      ...prova,
+      questoes: prova.questoes.map(q => q.questao) // Extraí apenas as informações de cada questão
+    });
   } else {
     res.status(404).json({ error: 'Prova não encontrada' });
   }
 };
 
-// Lista todas as questões de uma prova específica
-// const getExamQuestions = async (req, res) => {
-//   const provaId = parseInt(req.params.id);
 
-//   const questoes = await prisma.questao.findMany({
-//     where: {
-//       provas: {
-//         some: { provaId }
-//       }
-//     }
-//   });
 
-//   res.json(questoes);
-// };
+// Busque todas as provas de um professor
+const getExamsByProfessor = async (req, res) => {
+  const professorId = req.session.professorId;
+
+  const provas = await prisma.prova.findMany({
+    where: { professorId },
+  });
+
+  if (!provas) {
+    return res.status(404).json({ error: 'Nenhuma prova encontrada' });
+  }
+  res.json(provas);
+}
 
 // Adiciona questões a uma prova
 const addQuestionsToExam = async (req, res) => {
@@ -151,7 +181,6 @@ const addQuestionsToExam = async (req, res) => {
     const provasQuestoes = questaoIds.map((id, index) => ({
       provaId,
       questaoId: id,
-      numeroQuestao: index + 1
     }));
 
     await prisma.provasQuestao.createMany({
@@ -194,5 +223,6 @@ module.exports = {
   addQuestionsToExam,
   deleteQuestionsFromExam,
   generateExam,
-  renameExam
+  renameExam,
+  getExamsByProfessor
 };

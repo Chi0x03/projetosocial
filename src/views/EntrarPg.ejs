@@ -101,13 +101,13 @@
             <div class="avatar" onclick="openModal()"></div> <!-- Área de avatar que, ao ser clicada, abre o modal -->
             
             <div class="input-box">
-                <input type="text" placeholder="Seu nome"> <!-- Campo para inserir o nome -->
+                <input type="text" required id="nome" placeholder="Seu nome"> <!-- Campo para inserir o nome -->
             </div>
             
             <div class="input-box">
-                <input type="text" placeholder="Código da sala"> <!-- Campo para inserir o código da sala -->
+                <input type="text" required id="sala" placeholder="Código da sala"> <!-- Campo para inserir o código da sala -->
             </div>
-            <button id="startButton" class="btn">Entrar no jogo</button> 
+            <button id="startButton" type="submit" class="btn">Entrar no jogo</button> 
         </form>
     </div>
 
@@ -142,11 +142,34 @@
             closeModal(); /* Fecha o modal após a seleção */
         }
 
-        /* Função para iniciar a animação de fade-out ao clicar no botão "Entrar no jogo" */
-        document.getElementById("startButton").addEventListener("click", function(event) {
-            event.preventDefault(); /* Impede o envio padrão do formulário */
+        // função para pegar o nome e sala e salvar no cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`; 
+        }
+
+        function getCookie(name) {
+            const decodedCookies = decodeURIComponent(document.cookie);
+            const cookiesArray = decodedCookies.split('; ');
+            for (const cookie of cookiesArray) {
+                const [key, value] = cookie.split('=');
+                if (key === name) {
+                    return value;
+                }
+            }
+            return null;
+        } 
+
+        // Captura o nome e a sala no formulário
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const sala = document.getElementById('sala').value;
+            setCookie('nome', nome, 1);
+            setCookie('sala', sala, 1);
             
-            /* Aplica a classe de fade-out ao corpo da página */
             document.body.classList.add('fade-out');
 
             /* Após 1 segundo (tempo da animação), redireciona para a página "boa_sorte.html" */
@@ -154,6 +177,9 @@
                 window.location.href = "boa_sorte.html"; /* Redireciona para outra página */
             }, 1000); /* Tempo em milissegundos da animação (1 segundo) */
         });
+    </script>
+    <script>
+        
     </script>
 </body>
 </html>

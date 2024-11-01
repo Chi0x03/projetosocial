@@ -8,10 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PublicClass Questões</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body {
             background-image: url('IMG/fd_mtr.png'),
-            radial-gradient(farthest-corner at center, rgba(36, 123, 160, 1) 0%, rgba(0, 100, 148, 1) 30%, rgba(19, 41, 61, 1) 100%);
+                radial-gradient(farthest-corner at center, rgba(36, 123, 160, 1) 0%, rgba(0, 100, 148, 1) 30%, rgba(19, 41, 61, 1) 100%);
             background-repeat: repeat y, repeat x;
             background-position: 0% 0%, 100% 100%;
             background-size: cover;
@@ -89,7 +90,11 @@
             cursor: pointer;
         }
 
-        .item1, .item2, .item3, .item4, .item5 {
+        .item1,
+        .item2,
+        .item3,
+        .item4,
+        .item5 {
             background-color: #f48b31;
             border-radius: 25px;
         }
@@ -103,8 +108,10 @@
             font-size: 1.1rem;
             font-weight: bold;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%; /* Ocupa toda a largura das opções */
-            max-width: 600px; /* Limita o tamanho máximo do botão */
+            width: 100%;
+            /* Ocupa toda a largura das opções */
+            max-width: 600px;
+            /* Limita o tamanho máximo do botão */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -127,16 +134,19 @@
                 flex-direction: column;
             }
 
-            .col-questao, .col-opcoes {
+            .col-questao,
+            .col-opcoes {
                 flex: 0 0 100%;
             }
 
             .confirmar {
-                width: 100%; /* Garante que o botão continue responsivo */
+                width: 100%;
+                /* Garante que o botão continue responsivo */
             }
         }
 
-        .questao, .option-container {
+        .questao,
+        .option-container {
             max-width: 600px;
             margin: 0 auto;
         }
@@ -168,7 +178,7 @@
         }
 
         @media (min-width: 992px) {
-            .confirmar{
+            .confirmar {
                 width: 200px;
                 margin-left: 60%;
             }
@@ -181,72 +191,207 @@
         <div class="row">
             <div class="col-questao mb-4">
                 <div class="robopgq">
-                    <img src="IMG/robopgq.png" alt="">
+                    <!-- <img src="IMG/roboc.png" alt=""> -->
                 </div>
                 <div class="questao" id="questao">
-                    <h4></h4>
                     <p></p>
-                    <h3></h3>
                 </div>
             </div>
 
             <div class="col-opcoes">
-                <div class="option-container">
-                    <label class="option-btn item1">
-                        <input type="radio" name="option" value="1" id="item1">
-                    </label>
-                </div>
+                <form id="formOpcoes">
+                    <div class="option-container">
+                        <label class="option-btn item1">
+                            <input type="radio" name="option" value="A" id="item1">
+                        </label>
+                    </div>
 
-                <div class="option-container">
-                    <label class="option-btn item2">
-                        <input type="radio" name="option" value="2" id="item2">
-                    </label>
-                </div>
+                    <div class="option-container">
+                        <label class="option-btn item2">
+                            <input type="radio" name="option" value="B" id="item2">
+                        </label>
+                    </div>
 
-                <div class="option-container">
-                    <label class="option-btn item3">
-                        <input type="radio" name="option" value="3" id="item3">
-                    </label>
-                </div>
+                    <div class="option-container">
+                        <label class="option-btn item3">
+                            <input type="radio" name="option" value="C" id="item3">
+                        </label>
+                    </div>
 
-                <div class="option-container">
-                    <label class="option-btn item4">
-                        <input type="radio" name="option" value="4" id="item4">
-                    </label>
-                </div>
+                    <div class="option-container">
+                        <label class="option-btn item4">
+                            <input type="radio" name="option" value="D" id="item4">
+                        </label>
+                    </div>
 
-                <div class="option-container">
-                    <label class="option-btn item5">
-                        <input type="radio" name="option" value="5" id="item5">
-                    </label>
-                </div>
+                    <div class="option-container">
+                        <label class="option-btn item5">
+                            <input type="radio" name="option" value="E" id="item5">
+                        </label>
+                    </div>
 
-                <div class="btn-container">
-                    <button class="confirmar mb-4" id="confirm">Confirmar</button>
-                </div>
+                    <div class="btn-container">
+                        <button class="confirmar mb-4" type="submit" id="confirm">Confirmar</button>
+                    </div>
+                </form>
             </div>
         </div>
+
     </div>
 
     <div id="timer">00:00</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();
+        let questao = null;
+        let sala = null;
+        let idProva = null;
+        let timerInterval;
         let seconds = 0;
         let minutes = 0;
+        let totalSeconds = 0; // Tempo total acumulado
+        const respostas = []; // Array para armazenar respostas e tempo gasto por questão
 
-        const timerElement = document.getElementById('timer');
+        // Função para iniciar o timer para a questão atual
+        function startTimer() {
+            seconds = 0;
+            minutes = 0;
+            timerInterval = setInterval(() => {
+                seconds++;
+                totalSeconds++; // Incrementa o total de tempo em segundos
 
-        setInterval(() => {
-            seconds++;
-            if (seconds === 60) {
-                seconds = 0;
-                minutes++;
+                if (seconds === 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+
+                let timeString = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                document.getElementById('timer').textContent = timeString;
+            }, 1000);
+        }
+
+        // Função para parar o timer e retornar o tempo em segundos para a questão atual
+        function stopTimer() {
+            clearInterval(timerInterval);
+            return (minutes * 60) + seconds;
+        }
+
+        // Função para definir e obter cookies
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+        }
+
+        function getCookie(name) {
+            const decodedCookies = decodeURIComponent(document.cookie);
+            const cookiesArray = decodedCookies.split('; ');
+            for (const cookie of cookiesArray) {
+                const [key, value] = cookie.split('=');
+                if (key === name) {
+                    return value;
+                }
             }
+            return null;
+        }
 
-            let timeString = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-            timerElement.textContent = timeString;
-        }, 1000);
+        // Captura a sala dos parâmetros ou do cookie
+        const params = new URLSearchParams(window.location.search);
+        sala = params.get('sala');
+        if (sala) {
+            setCookie('sala', sala, 1);
+        } else {
+            sala = getCookie('sala');
+        }
+
+        // Captura o nome dos parâmetros ou do cookie
+        let nome = params.get('nome');
+        if (nome) {
+            setCookie('nome', nome, 1);
+        } else {
+            nome = getCookie('nome');
+        }
+
+        // Emite o evento para entrar na sala do quiz
+        socket.emit('join-quiz', { roomId: sala, nome });
+
+        // Recebe uma nova questão e inicia o timer
+        socket.on('question', ({ question, provaId }) => {
+            const questaoElement = document.getElementById('questao');
+            questao = question;
+            idProva = provaId;
+            questaoElement.innerHTML = question.enunciado;
+
+            document.querySelector('.item1').innerHTML += question.alternativaA;
+            document.querySelector('.item2').innerHTML += question.alternativaB;
+            document.querySelector('.item3').innerHTML += question.alternativaC;
+            document.querySelector('.item4').innerHTML += question.alternativaD;
+            document.querySelector('.item5').innerHTML += question.alternativaE;
+
+            startTimer(); // Inicia o timer ao exibir a questão
+        });
+
+        // Função para processar a resposta do aluno
+        function onAnswerSelected(itemMarcado) {
+            const tempoGasto = stopTimer(); // Para o timer e obtém o tempo gasto
+
+            // Armazena a resposta com o tempo gasto
+            respostas.push({
+                questao: questao.id,
+                itemMarcado,
+                acertou: itemMarcado === questao.respostaCorreta, // Exemplo para verificar se está correta
+                tempoGasto
+            });
+
+            console.log(`Tempo gasto na questão ${questao.id}: ${tempoGasto} segundos`);
+        }
+
+        // Evento de envio de resposta
+        const form = document.querySelector('#formOpcoes');
+
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                // Captura a opção marcada
+                const selectedOption = form.querySelector('input[name="option"]:checked');
+                const confirmButton = form.querySelector('button[type="submit"]');
+                confirmButton.disabled = true;
+
+                if (selectedOption) {
+                    const itemMarcado = selectedOption.value;
+                    console.log("Opção selecionada:", itemMarcado); // Exibe o valor selecionado no console para verificação
+                    socket.emit('answer', { roomId: sala, itemMarcado: itemMarcado, nome: nome });
+                    onAnswerSelected(itemMarcado); // Função que processa a resposta selecionada
+                    form.reset(); // Limpa a seleção para a próxima questão
+                } else {
+                    console.log("Nenhuma opção foi selecionada.");
+                }
+            });
+        } else {
+            console.log("Formulário com o ID 'formOpcoes' não foi encontrado.");
+        }
+
+
+        // Quando o quiz é concluído
+        socket.on('quiz-completed', () => {
+            const postData = {
+                nomeAluno: nome,
+                totalAcertos: respostas.filter(r => r.acertou).length,
+                respostas,
+                tempoDeResposta: totalSeconds // Tempo total acumulado em segundos
+            };
+
+            console.log('Dados para envio:', postData);
+            try {
+                const response = axios.post(`/vista_pedagocia/${idProva}/add-answer`, postData);
+            } catch (error) {
+                console.error('Erro ao enviar os dados:', error);
+            }
+        });
+
     </script>
 </body>
 
