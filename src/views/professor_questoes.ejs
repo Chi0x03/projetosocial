@@ -280,7 +280,7 @@
     }
 
 
-    socket.emit('join-quiz', { roomId: sala, nome });
+    socket.emit('join-quiz', { roomId: sala, nome, isProfessor: true });
 
     // Fetch exam data
     axios.get('/provas/' + provaId)

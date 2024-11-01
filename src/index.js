@@ -78,7 +78,7 @@ app.get('/ContPG.html', (req, res) => {
   res.render('ContPG');
 });
 
-app.get('/sala.html', (req, res) => {
+app.get('/sala.html', isAuthenticated, (req, res) => {
   res.render('sala');
 });
 
@@ -89,12 +89,16 @@ const currentQuestions = {};
 io.on('connection', (socket) => {
   console.log('Aluno conectado', socket.id);
 
-  socket.on('join-quiz', ({ roomId, nome }) => {
+  // Identificar se o usuário é professor
+  socket.on('join-quiz', ({ roomId, nome, isProfessor }) => {
     socket.join(roomId);
+    socket.isProfessor = isProfessor; // Marca se o usuário é o professor
     console.log(`Aluno ${nome} entrou na sala ${roomId}`);
 
     // Envia a contagem de alunos na sala
-    io.to(roomId).emit('alunos-count', { count: socket.adapter.rooms.get(roomId).size });
+    const room = socket.adapter.rooms.get(roomId);
+    const count = room ? room.size : 0; // Verifica se a sala existe
+    io.to(roomId).emit('alunos-count', { count, aluno: nome, id: socket.id });
 
     // Envia a questão atual para o aluno que entrou
     if (currentQuestions[roomId]) {
@@ -103,7 +107,34 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       console.log('Aluno desconectado', socket.id);
-      io.to(roomId).emit('alunos-count', { count: socket.adapter.rooms.get(roomId).size });
+      
+      // Verifica se a sala ainda existe e emite a contagem atualizada
+      const room = socket.adapter.rooms.get(roomId);
+      const count = room ? room.size : 0;
+      if (count > 0) {
+        io.to(roomId).emit('alunos-count', { count, id: socket.id });
+      }
+
+      // Se o professor desconectar, desconectar todos os alunos
+      if (socket.isProfessor) {
+        console.log(`Professor desconectado, desconectando alunos da sala ${roomId}`);
+        const socketsInRoom = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+        socketsInRoom.forEach((studentId) => {
+          if (studentId !== socket.id) { // Não desconectar o próprio professor
+            const studentSocket = io.sockets.sockets.get(studentId);
+            if (studentSocket) {
+              studentSocket.emit('redirect-to-insert-code'); // Emitir evento para redirecionar
+              studentSocket.disconnect(); // Desconecta o aluno
+            }
+          }
+        });
+      }
+
+      // Remove os dados da sala se ela estiver vazia
+      if (!room || room.size === 0) {
+        console.log(`Sala ${roomId} está vazia. Removendo dados.`);
+        delete currentQuestions[roomId]; // Remove as questões associadas à sala
+      }
     });
   });
 
@@ -123,6 +154,7 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('answer-prof', { itemMarcado, nome });
   });
 });
+
 
 
 // Inicia o servidor na porta 8080

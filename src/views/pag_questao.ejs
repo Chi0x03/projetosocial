@@ -375,6 +375,10 @@
         }
 
 
+        socket.on('redirect-to-insert-code', ({ count, aluno, id }) => {
+            window.location.href = `/EntrarPG.html`;
+        })
+
         // Quando o quiz é concluído
         socket.on('quiz-completed', () => {
             const postData = {
