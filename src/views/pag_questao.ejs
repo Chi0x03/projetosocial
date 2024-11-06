@@ -261,7 +261,6 @@
             document.cookie = name + "=" + value + ";" + expires + ";path=/";
         }
 
-
         const socket = io();
         let questao = null;
         let sala = null;
@@ -270,7 +269,9 @@
         let seconds = 0;
         let minutes = 0;
         let totalSeconds = 0;
-        const respostas = [];
+
+        // Carrega as respostas do localStorage ou inicializa como um array vazio
+        let respostas = JSON.parse(localStorage.getItem('respostas')) || [];
 
         // Função para iniciar o timer
         function startTimer() {
@@ -312,9 +313,15 @@
             nome = getCookie('nome');
         }
 
+        let limparRespostas = params.get('limparRespostas');
+        if (limparRespostas) {
+            localStorage.removeItem('respostas');
+        }
+
         // Envia o evento de entrada do aluno
         socket.emit('join-quiz', { roomId: sala, nome });
 
+        // Recebe a questão do professor e exibe
         // Recebe a questão do professor e exibe
         socket.on('question', ({ question, provaId }) => {
             const questaoElement = document.getElementById('questao');
@@ -322,29 +329,46 @@
             idProva = provaId;
             questaoElement.innerHTML = question.enunciado;
 
-            // Exibe as alternativas
-            document.querySelector('.item1').innerHTML = question.alternativaA;
-            document.querySelector('.item2').innerHTML = question.alternativaB;
-            document.querySelector('.item3').innerHTML = question.alternativaC;
-            document.querySelector('.item4').innerHTML = question.alternativaD;
-            document.querySelector('.item5').innerHTML = question.alternativaE;
+            // Exibe as alternativas sem sobrescrever o HTML dos inputs
+            document.querySelector('.item1').innerHTML = `<input type="radio" name="option" value="A" id="item1">${question.alternativaA}`;
+            document.querySelector('.item2').innerHTML = `<input type="radio" name="option" value="B" id="item2">${question.alternativaB}`;
+            document.querySelector('.item3').innerHTML = `<input type="radio" name="option" value="C" id="item3">${question.alternativaC}`;
+            document.querySelector('.item4').innerHTML = `<input type="radio" name="option" value="D" id="item4">${question.alternativaD}`;
+            document.querySelector('.item5').innerHTML = `<input type="radio" name="option" value="E" id="item5">${question.alternativaE}`;
 
             startTimer(); // Inicia o timer ao receber a questão
+
+            // Reativa o formulário
+            enableFormInputs();
         });
+
+        // Função para reativar todos os inputs do formulário
+        function enableFormInputs() {
+            const inputs = form.querySelectorAll('input, button');
+            inputs.forEach(input => {
+                input.disabled = false; // Remove o atributo disabled
+            });
+        }
+
 
         // Função para processar a resposta e enviá-la
         function onAnswerSelected(itemMarcado) {
             const tempoGasto = stopTimer(); // Obtém o tempo gasto na questão
 
             // Armazena a resposta e tempo gasto
-            respostas.push({
-                questao: questao.id,
+            const resposta = {
+                questaoId: questao.id,
+                aluno: nome,
                 itemMarcado,
                 acertou: itemMarcado === questao.respostaCorreta, // Verifica se está correta
-                tempoGasto
-            });
+                provaId: idProva
+            };
+
+            respostas.push(resposta);
+            localStorage.setItem('respostas', JSON.stringify(respostas)); // Salva no localStorage
 
             console.log(`Tempo gasto na questão ${questao.id}: ${tempoGasto} segundos`);
+            console.log(respostas);
         }
 
         // Envia a resposta ao professor
@@ -367,17 +391,30 @@
                 // Armazena a resposta no array
                 onAnswerSelected(itemMarcado);
 
-                alert(`Resposta "${itemMarcado}" enviada!`);
+                if (itemMarcado !== questao.respostaCorreta) {
+                    alert(questao.explicacao);
+                }
 
                 // Desmarca a opção
                 selectedOption.checked = false;
+
+                // Desativa todos os inputs do formulário
+                disableFormInputs();
             } else {
                 alert("Por favor, selecione uma resposta.");
             }
         });
 
+        // Função para desativar todos os inputs do formulário
+        function disableFormInputs() {
+            const inputs = form.querySelectorAll('input, button');
+            inputs.forEach(input => {
+                input.disabled = true; // Desativa o input
+            });
+        }
+
         // Quando o quiz é concluído, envia as respostas e tempo total
-        socket.on('quiz-completed', () => {
+        socket.on('quiz-completed', ({ provaId }) => {
             const postData = {
                 nomeAluno: nome,
                 totalAcertos: respostas.filter(r => r.acertou).length,
@@ -385,12 +422,18 @@
                 tempoDeResposta: totalSeconds
             };
 
+            // fazer um loop nas repostas e adicionar o id da prova
+            for (let i = 0; i < respostas.length; i++) {
+                respostas[i].provaId = parseInt(provaId);
+            }
+
             console.log('Dados para envio:', postData);
 
             try {
-                axios.post('/salvar-respostas', postData)
+                axios.post('/vista_pedagogica/' + provaId + '/add-answer', postData)
                     .then(response => {
                         console.log("Resposta salva com sucesso!", response);
+                        localStorage.removeItem('respostas'); // Limpa as respostas do localStorage após o envio
                     })
                     .catch(error => {
                         console.error("Erro ao salvar resposta:", error);
@@ -400,6 +443,7 @@
             }
         });
     </script>
+
 
 </body>
 

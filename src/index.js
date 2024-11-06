@@ -40,7 +40,7 @@ app.use('/questoes', questionRoutes);
 app.use('/descritores', descritorRoutes);
 app.use('/professor', teacherRoutes);
 app.use('/auth', authRoutes);
-app.use('/vista_pedagocia', pedagogicViewRoutes);
+app.use('/vista_pedagogica', pedagogicViewRoutes);
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -109,36 +109,52 @@ app.get('/MontarP2.html', (req, res) => {
 // Rota para os alunos se conectarem à salaconst currentQuestions = {}; // Objeto para armazenar a questão atual de cada sala
 const currentQuestions = {};
 const answersCount = {}; // Armazena a contagem de respostas por sala
+const provaIds = {}; // Armazena o provaId para cada sala
 
 io.on('connection', (socket) => {
   console.log('Aluno conectado', socket.id);
 
-  socket.on('join-quiz', ({ roomId, nome, isProfessor }) => {
+  socket.on('join-quiz', ({ roomId, nome, isProfessor, question, provaId }) => {
     socket.join(roomId);
-    console.log(`Questão atual: ${currentQuestions[roomId]}`);
     socket.isProfessor = isProfessor;
+    console.log(`Aluno ${nome} conectado na sala ${roomId}`, socket.id);
+
+    // Define a questão atual se não estiver definida ainda
+    if (!currentQuestions[roomId]) {
+      currentQuestions[roomId] = question;
+    }
 
     // Inicializa a contagem de respostas para a sala
     if (!answersCount[roomId]) {
       answersCount[roomId] = { A: 0, B: 0, C: 0, D: 0, E: 0 };
     }
 
-    // Envia a contagem inicial para o professor ao entrar na sala
+    // Armazena o ID da prova quando o professor entra
     if (isProfessor) {
-      socket.emit('answers-count', answersCount[roomId]);
+      currentQuestions[roomId] = question;
+      provaIds[roomId] = provaId; // Salva o provaId para a sala
     }
 
-    console.log(`Aluno ${nome} conectado na sala ${roomId}`, socket.id);
+    // Envia a questão atual para o aluno que entrou
+    socket.emit('question', { question: currentQuestions[roomId], provaId });
 
+    // Emite a quantidade de alunos na sala
+    io.to(roomId).emit('alunos-count', { count: io.sockets.adapter.rooms.get(roomId).size, aluno: 'Aluno', id: socket.id });
+
+    io.to(roomId).emit('status-list', { nome, id: socket.id });
+
+    // Envia a contagem inicial para o professor ao entrar na sala
     socket.on('disconnect', () => {
       console.log('Aluno desconectado', socket.id);
       io.to(roomId).emit('aluno-desconectado', { id: socket.id });
+      
+      // Opcional: limpar a sala quando o último aluno sair
+      if (!io.sockets.adapter.rooms.get(roomId)) {
+        delete currentQuestions[roomId];
+        delete answersCount[roomId];
+        delete provaIds[roomId]; // Limpa o provaId quando a sala estiver vazia
+      }
     });
-  });
-
-  socket.on('primeira-questao', ({ roomId, provaId, question }) => {
-    currentQuestions[roomId] = { question, provaId };
-    io.to(roomId).emit('question', { question, provaId });
   });
 
   socket.on('next-question', async ({ roomId, currentQuestion }) => {
@@ -147,20 +163,26 @@ io.on('connection', (socket) => {
     currentQuestions[roomId] = currentQuestion;
 
     // Emite a nova questão e a contagem reiniciada para todos na sala
-    io.to(roomId).emit('question', currentQuestion);
-    io.to(roomId).emit('answers-count', answersCount[roomId]); // Envia a contagem zerada ao professor
+    io.to(roomId).emit('question', { question: currentQuestion });
+    io.to(roomId).emit('update-answer-count', answersCount[roomId]); // Envia a contagem zerada ao professor
   });
 
   socket.on('answer', ({ roomId, itemMarcado, alunoId }) => {
     // Incrementa a contagem de respostas
     if (!answersCount[roomId]) answersCount[roomId] = { A: 0, B: 0, C: 0, D: 0, E: 0 };
     answersCount[roomId][itemMarcado]++;
+    console.log(answersCount[roomId]);
     
     // Envia a atualização ao professor com a contagem de respostas
     io.to(roomId).emit('update-answer-count', answersCount[roomId]);
 
     // Notifica o professor que o aluno respondeu para atualizar o ícone
     io.to(roomId).emit('aluno-answered', { alunoId });
+  });
+
+  socket.on('finish-quiz', ({ roomId, provaId }) => {
+    // Envia o ID da prova junto com o evento de quiz concluído
+    io.to(roomId).emit('quiz-completed', { provaId });
   });
 });
 

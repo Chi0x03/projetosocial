@@ -54,6 +54,7 @@ const getPedagogicView = async (req, res) => {
 const addAnswer = async (req, res) => {
   try {
     const { tempoDeResposta, totalAcertos, nomeAluno, respostas } = req.body;
+    const provaId = parseInt(req.params.id);
     const respostasDeProvas = await prisma.respostasDeProvas.createMany({
       data: respostas
     });
@@ -63,11 +64,11 @@ const addAnswer = async (req, res) => {
         nomeAluno,
         totalAcertos,
         tempoDeResposta,
-        provaId: req.params.id
+        provaId
       }
     });
 
-    res.json(respostasDeProvas, ranking);
+    res.json('respostasDeProvas criadas com sucesso');
 
   } catch (error) {
     console.error(error);
@@ -75,8 +76,33 @@ const addAnswer = async (req, res) => {
   }
 };
 
+const getRanking = async (req, res) => {
+  try {
+    const provaId = parseInt(req.params.id);
+    const ranking = await prisma.ranking.findFirst({
+      where: { provaId },
+      orderBy: [
+        {
+          totalAcertos: 'desc'
+        },
+        {
+          tempoDeResposta: 'asc'
+        }
+      ]
+    });
+
+    // Envia a resposta com os dados do ranking
+    res.json(ranking);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao obter ranking' });
+  }
+};
+
+
 module.exports = {
   getPedagogicView,
-  addAnswer
+  addAnswer,
+  getRanking
 };
 

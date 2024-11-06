@@ -146,6 +146,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -206,7 +207,6 @@
                 <h3><span id="numAlunos"></span> Respostas restantes</h3>
             </div>
             <div class="status-list" id="status-list">
-                <!-- A lista de alunos será preenchida via JavaScript -->
             </div>
         </div>
     </div>
@@ -220,11 +220,33 @@
     let prova = null;
     const params = new URLSearchParams(window.location.search);
     let questionIndex = 0;
+    let quantidadeAlunos = 0;
     const proximaQuestao = document.getElementById('proximaQuestao');
 
     let provaId = params.get('provaId') || getCookie('provaId');
     let sala = params.get('sala') || getCookie('sala');
-    let nome = params.get('nome') || getCookie('nome');
+    // let nome = params.get('nome') || getCookie('nome');
+    let nome = 'professor'
+
+    if (params.get('reiniciar') === 'true') {
+        questionIndex = 0;
+        localStorage.setItem('questionIndex', questionIndex);
+    }
+
+    axios.get('/provas/' + provaId)
+        .then((response) => {
+            prova = response.data;
+            if (prova && prova.questoes && prova.questoes.length > 0) {
+                // socket.emit('primeira-questao', { roomId: sala, provaId: provaId, question: prova.questoes[0] });
+                socket.emit('join-quiz', { roomId: sala, provaId, nome, isProfessor: true, question: prova.questoes[0] });
+                console.log(prova)
+            } else {
+                console.error('Prova ou questões não disponíveis');
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao buscar prova:', error);
+        });
 
     if (provaId) {
         setCookie('provaId', provaId, 1);
@@ -236,39 +258,52 @@
         setCookie('nome', nome, 1);
     }
 
-    socket.emit('join-quiz', { roomId: sala, nome, isProfessor: true });
-
-    // Fetch exam data
-    axios.get('/provas/' + provaId)
-        .then((response) => {
-            prova = response.data;
-            if (prova && prova.questoes && prova.questoes.length > 0) {
-                socket.emit('primeira-questao', { roomId: sala, provaId: provaId, question: prova.questoes[0] });
-            } else {
-                console.error('Prova ou questões não disponíveis');
-            }
-        })
-        .catch((error) => {
-            console.error('Erro ao buscar prova:', error);
-        });
-
     socket.on('alunos-count', ({ count }) => {
         document.getElementById('numAlunos').innerHTML = count - 1;
-        socket.emit('next-question', { roomId: sala, currentQuestion: prova.questoes[questionIndex] });
+        quantidadeAlunos = count;
     });
+    let savedQuestionIndex = localStorage.getItem('questionIndex');
+    if (savedQuestionIndex) {
+        questionIndex = parseInt(savedQuestionIndex);  // Recupera e usa o índice salvo
+        document.getElementById('numQuestao').innerText = questionIndex + 1;  // Atualiza o número da questão
+    }
 
+    // Modificar o evento de "Próxima Questão" para salvar o índice
     proximaQuestao.addEventListener('click', (e) => {
         e.preventDefault();
+
+        document.getElementById('numAlunos').innerHTML = quantidadeAlunos - 1;
         questionIndex++;
+
+        // Salva o índice da questão no localStorage
+        localStorage.setItem('questionIndex', questionIndex);
+
         if (questionIndex < prova.questoes.length) {
+            if (questionIndex == prova.questoes.length - 1) {
+                // substitui o botão de proxima questão por um botão de finalizar prova
+                proximaQuestao.innerHTML = '<div class="alternativa" style="background-color: #e74c3c; font-size: 40px;"><h5>Finalizar prova</h5></div>';
+            }
             document.getElementById('numQuestao').innerHTML = questionIndex + 1;
             socket.emit('next-question', { roomId: sala, currentQuestion: prova.questoes[questionIndex] });
+            console.log(prova.questoes[questionIndex]);
         } else {
             console.log('Não há mais questões.');
+            alert('Não há mais questões. Prova finalizada!');
+            socket.emit('finish-quiz', { roomId: sala, provaId });
+            questionIndex = 0;
+            localStorage.setItem('questionIndex', questionIndex);
+        }
+
+        // loop para alterar a imagem de todos os status para interrogação
+        let statusList = document.getElementById('status-list');
+        for (let i = 0; i < statusList.children.length; i++) {
+            let item = statusList.children[i];
+            item.querySelector('.status img').src = 'IMG/interrogacao.png';
+            item.querySelector('.status img').alt = 'Interrogação';
         }
     });
 
-    socket.on('answers-count', (counts) => {
+    socket.on('update-answer-count', (counts) => {
         document.getElementById('count-A').innerText = counts.A;
         document.getElementById('count-B').innerText = counts.B;
         document.getElementById('count-C').innerText = counts.C;
@@ -276,15 +311,67 @@
         document.getElementById('count-E').innerText = counts.E;
     });
 
-    socket.on('status-list', (status) => {
+    socket.on('status-list', ({ nome, id }) => {
+        if (nome == 'professor') {
+            return;
+        }
         let statusList = document.getElementById('status-list');
-        statusList.innerHTML = '';
-        status.forEach(student => {
-            let item = document.createElement('div');
-            item.className = 'status-item';
-            item.innerHTML = `<div class="avatar">${student.nome}</div><div class="status">${student.status}</div>`;
-            statusList.appendChild(item);
-        });
+
+        // Cria o container do item de status
+        let item = document.createElement('div');
+        item.className = 'status-item';
+        item.id = id;
+
+        // Cria o avatar e insere a imagem
+        let avatarDiv = document.createElement('div');
+        avatarDiv.className = 'avatar';
+        let avatarImg = document.createElement('img');
+        avatarImg.src = 'IMG/avatar.png';
+        avatarImg.height = 40;
+        avatarImg.width = 40;
+        avatarDiv.appendChild(avatarImg);
+
+        // Cria o elemento do nome do aluno
+        let nameDiv = document.createElement('div');
+        nameDiv.className = 'student-name';
+        nameDiv.textContent = nome;
+
+        // Cria o status com o ícone de interrogação
+        let statusDiv = document.createElement('div');
+        statusDiv.className = 'status';
+        let statusImg = document.createElement('img');
+        statusImg.height = 35;
+        statusImg.width = 35;
+        statusImg.src = 'IMG/interrogacao.png'; // Ícone padrão de interrogação
+        statusDiv.appendChild(statusImg);
+
+        // Adiciona avatar, nome e status ao item
+        item.appendChild(avatarDiv);
+        item.appendChild(nameDiv);
+        item.appendChild(statusDiv);
+
+        // Adiciona o item à lista de status
+        statusList.appendChild(item);
+    });
+
+
+    socket.on('aluno-answered', ({ alunoId }) => {
+        let item = document.getElementById(alunoId);
+        document.getElementById('numAlunos').innerHTML = parseInt(document.getElementById('numAlunos').innerHTML) - 1;
+
+        if (item) {
+            // Encontra a div de status e altera a imagem para o ícone de correto
+            let statusDiv = item.querySelector('.status img');
+
+            if (statusDiv) {
+                statusDiv.src = 'IMG/correto.png'; // Define o ícone como correto
+                statusDiv.alt = 'Correto';
+            } else {
+                console.error(`Elemento de status não encontrado para o aluno ${alunoId}`);
+            }
+        } else {
+            console.error(`Elemento não encontrado para o aluno com ID ${alunoId}`);
+        }
     });
 
     function setCookie(name, value, days) {
@@ -305,4 +392,5 @@
         return null;
     }
 </script>
+
 </html>

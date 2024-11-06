@@ -13,7 +13,7 @@ model Ranking {
   provaId         Int
   nomeAluno       String
   totalAcertos    Int
-  tempoDeResposta BigInt // Representa o tempo total de resposta em segundos
+  tempoDeResposta Int // Representa o tempo total de resposta em segundos
   dataCriacao     DateTime @default(now()) // Data de criação do ranking
 
   prova Prova @relation(fields: [provaId], references: [id])
@@ -31,12 +31,12 @@ model Professor {
 }
 
 model Descritor {
-  id                Int                 @id @default(autoincrement())
-  ano               String
-  codigo            String //@db.VarChar(100)
-  descricao         String //@db.Text
-  disciplina        String
-  questoes          Questao[]
+  id         Int       @id @default(autoincrement())
+  ano        String
+  codigo     String //@db.VarChar(100)
+  descricao  String //@db.Text
+  disciplina String
+  questoes   Questao[]
 }
 
 model Questao {
@@ -71,23 +71,22 @@ model Prova {
 }
 
 model ProvasQuestoes {
-  provaId       Int
-  questaoId     Int
-  prova         Prova   @relation(fields: [provaId], references: [id])
-  questao       Questao @relation(fields: [questaoId], references: [id])
+  provaId   Int
+  questaoId Int
+  prova     Prova   @relation(fields: [provaId], references: [id])
+  questao   Questao @relation(fields: [questaoId], references: [id])
 
   @@id([provaId, questaoId])
 }
 
 model RespostasDeProvas {
-  provaId       Int
-  questaoId     Int
-  prova         Prova     @relation(fields: [provaId], references: [id])
-  questao       Questao   @relation(fields: [questaoId], references: [id])
-  dataDeProva   DateTime  @default(now())
-  aluno         String
-  itemMarcado   String
-  acertou       Boolean
-
-  @@id([provaId, questaoId])
+  id          Int      @id @default(autoincrement())
+  provaId     Int
+  questaoId   Int
+  prova       Prova    @relation(fields: [provaId], references: [id])
+  questao     Questao  @relation(fields: [questaoId], references: [id])
+  dataDeProva DateTime @default(now())
+  aluno       String
+  itemMarcado String
+  acertou     Boolean
 }
