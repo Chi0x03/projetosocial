@@ -244,6 +244,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // Função para obter o valor de um cookie pelo nome
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) {
+                return match[2];
+            }
+            return null;
+        }
+
+        // Função para definir um cookie com nome, valor e tempo de expiração
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Expiração em dias
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+
         const socket = io();
         let questao = null;
         let sala = null;
@@ -251,16 +269,16 @@
         let timerInterval;
         let seconds = 0;
         let minutes = 0;
-        let totalSeconds = 0; // Tempo total acumulado
-        const respostas = []; // Array para armazenar respostas e tempo gasto por questão
+        let totalSeconds = 0;
+        const respostas = [];
 
-        // Função para iniciar o timer para a questão atual
+        // Função para iniciar o timer
         function startTimer() {
             seconds = 0;
             minutes = 0;
             timerInterval = setInterval(() => {
                 seconds++;
-                totalSeconds++; // Incrementa o total de tempo em segundos
+                totalSeconds++;
 
                 if (seconds === 60) {
                     seconds = 0;
@@ -272,32 +290,13 @@
             }, 1000);
         }
 
-        // Função para parar o timer e retornar o tempo em segundos para a questão atual
+        // Função para parar o timer e retornar o tempo gasto na questão
         function stopTimer() {
             clearInterval(timerInterval);
             return (minutes * 60) + seconds;
         }
 
-        // Função para definir e obter cookies
-        function setCookie(name, value, days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
-        }
-
-        function getCookie(name) {
-            const decodedCookies = decodeURIComponent(document.cookie);
-            const cookiesArray = decodedCookies.split('; ');
-            for (const cookie of cookiesArray) {
-                const [key, value] = cookie.split('=');
-                if (key === name) {
-                    return value;
-                }
-            }
-            return null;
-        }
-
-        // Captura a sala dos parâmetros ou do cookie
+        // Captura da sala e do nome
         const params = new URLSearchParams(window.location.search);
         sala = params.get('sala');
         if (sala) {
@@ -306,7 +305,6 @@
             sala = getCookie('sala');
         }
 
-        // Captura o nome dos parâmetros ou do cookie
         let nome = params.get('nome');
         if (nome) {
             setCookie('nome', nome, 1);
@@ -314,89 +312,95 @@
             nome = getCookie('nome');
         }
 
-        // Emite o evento para entrar na sala do quiz
+        // Envia o evento de entrada do aluno
         socket.emit('join-quiz', { roomId: sala, nome });
 
-        // Recebe uma nova questão e inicia o timer
+        // Recebe a questão do professor e exibe
         socket.on('question', ({ question, provaId }) => {
             const questaoElement = document.getElementById('questao');
             questao = question;
             idProva = provaId;
             questaoElement.innerHTML = question.enunciado;
 
-            document.querySelector('.item1').innerHTML += question.alternativaA;
-            document.querySelector('.item2').innerHTML += question.alternativaB;
-            document.querySelector('.item3').innerHTML += question.alternativaC;
-            document.querySelector('.item4').innerHTML += question.alternativaD;
-            document.querySelector('.item5').innerHTML += question.alternativaE;
+            // Exibe as alternativas
+            document.querySelector('.item1').innerHTML = question.alternativaA;
+            document.querySelector('.item2').innerHTML = question.alternativaB;
+            document.querySelector('.item3').innerHTML = question.alternativaC;
+            document.querySelector('.item4').innerHTML = question.alternativaD;
+            document.querySelector('.item5').innerHTML = question.alternativaE;
 
-            startTimer(); // Inicia o timer ao exibir a questão
+            startTimer(); // Inicia o timer ao receber a questão
         });
 
-        // Função para processar a resposta do aluno
+        // Função para processar a resposta e enviá-la
         function onAnswerSelected(itemMarcado) {
-            const tempoGasto = stopTimer(); // Para o timer e obtém o tempo gasto
+            const tempoGasto = stopTimer(); // Obtém o tempo gasto na questão
 
-            // Armazena a resposta com o tempo gasto
+            // Armazena a resposta e tempo gasto
             respostas.push({
                 questao: questao.id,
                 itemMarcado,
-                acertou: itemMarcado === questao.respostaCorreta, // Exemplo para verificar se está correta
+                acertou: itemMarcado === questao.respostaCorreta, // Verifica se está correta
                 tempoGasto
             });
 
             console.log(`Tempo gasto na questão ${questao.id}: ${tempoGasto} segundos`);
         }
 
-        // Evento de envio de resposta
-        const form = document.querySelector('#formOpcoes');
+        // Envia a resposta ao professor
+        const form = document.getElementById('formOpcoes');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
 
-        if (form) {
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
+            const selectedOption = form.querySelector('input[name="option"]:checked');
+            if (selectedOption) {
+                const itemMarcado = selectedOption.value;
 
-                // Captura a opção marcada
-                const selectedOption = form.querySelector('input[name="option"]:checked');
-                const confirmButton = form.querySelector('button[type="submit"]');
-                confirmButton.disabled = true;
+                // Envia a resposta ao servidor
+                socket.emit('answer', {
+                    roomId: sala,
+                    itemMarcado,
+                    alunoId: socket.id,
+                    provaId: idProva
+                });
 
-                if (selectedOption) {
-                    const itemMarcado = selectedOption.value;
-                    console.log("Opção selecionada:", itemMarcado); // Exibe o valor selecionado no console para verificação
-                    socket.emit('answer', { roomId: sala, itemMarcado: itemMarcado, nome: nome });
-                    onAnswerSelected(itemMarcado); // Função que processa a resposta selecionada
-                    form.reset(); // Limpa a seleção para a próxima questão
-                } else {
-                    console.log("Nenhuma opção foi selecionada.");
-                }
-            });
-        } else {
-            console.log("Formulário com o ID 'formOpcoes' não foi encontrado.");
-        }
+                // Armazena a resposta no array
+                onAnswerSelected(itemMarcado);
 
+                alert(`Resposta "${itemMarcado}" enviada!`);
 
-        socket.on('redirect-to-insert-code', ({ count, aluno, id }) => {
-            window.location.href = `/EntrarPG.html`;
-        })
+                // Desmarca a opção
+                selectedOption.checked = false;
+            } else {
+                alert("Por favor, selecione uma resposta.");
+            }
+        });
 
-        // Quando o quiz é concluído
+        // Quando o quiz é concluído, envia as respostas e tempo total
         socket.on('quiz-completed', () => {
             const postData = {
                 nomeAluno: nome,
                 totalAcertos: respostas.filter(r => r.acertou).length,
                 respostas,
-                tempoDeResposta: totalSeconds // Tempo total acumulado em segundos
+                tempoDeResposta: totalSeconds
             };
 
             console.log('Dados para envio:', postData);
+
             try {
-                const response = axios.post(`/vista_pedagocia/${idProva}/add-answer`, postData);
+                axios.post('/salvar-respostas', postData)
+                    .then(response => {
+                        console.log("Resposta salva com sucesso!", response);
+                    })
+                    .catch(error => {
+                        console.error("Erro ao salvar resposta:", error);
+                    });
             } catch (error) {
-                console.error('Erro ao enviar os dados:', error);
+                console.error("Erro ao tentar enviar os dados:", error);
             }
         });
-
     </script>
+
 </body>
 
 </html>

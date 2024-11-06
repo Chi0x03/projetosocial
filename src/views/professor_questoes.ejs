@@ -146,7 +146,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <div class="container">
@@ -162,38 +161,38 @@
 
             <div class="alternativas">
                 <div class="alternativa">
-                    <div class="" style="font-family: 'DoubleBassB';">
+                    <div class="letter" style="font-family: 'DoubleBassB';">
                         A
                     </div>
-                    <div class="count">10</div>
+                    <div class="count" id="count-A">0</div>
                 </div>
                 <div class="alternativa">
-                    <div class="" style="font-family: 'DoubleBassB';">
+                    <div class="letter" style="font-family: 'DoubleBassB';">
                         B
                     </div>
-                    <div class="count">2</div>
+                    <div class="count" id="count-B">0</div>
                 </div>
                 <div class="alternativa">
-                    <div class="" style="font-family: 'DoubleBassB';">
+                    <div class="letter" style="font-family: 'DoubleBassB';">
                         C
                     </div>
-                    <div class="count">7</div>
+                    <div class="count" id="count-C">0</div>
                 </div>
                 <div class="alternativa">
-                    <div class="" style="font-family: 'DoubleBassB';">
+                    <div class="letter" style="font-family: 'DoubleBassB';">
                         D
                     </div>
-                    <div class="count">1</div>
+                    <div class="count" id="count-D">0</div>
                 </div>
                 <div class="alternativa">
-                    <div class="" style="font-family: 'DoubleBassB';">
+                    <div class="letter" style="font-family: 'DoubleBassB';">
                         E
                     </div>
-                    <div class="count">0</div>
+                    <div class="count" id="count-E">0</div>
                 </div>
                 <a id="proximaQuestao" style="text-decoration: none;">
                     <div class="alternativa" style="background-color: #e74c3c; font-size: 40px;">
-                        <h5> Próxima questão</h5>
+                        <h5>Próxima questão</h5>
                     </div>
                 </a>
             </div>
@@ -206,21 +205,8 @@
             <div class="status-header" style="background-color: #e74c3c;">
                 <h3><span id="numAlunos"></span> Respostas restantes</h3>
             </div>
-            <div class="status-list">
-                <div class="status-item">
-                    <div class="avatar"> <img src="IMG/avatar.png" height="40px" width="40px"> </div>
-                    João Pedro
-                    <div class="status check">
-                        <img src="IMG/correto.png" height="35px" width="35px">
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="avatar"> <img src="IMG/avatar.png" height="40px" width="40px"> </div>
-                    Isabeli
-                    <div class="status question">
-                        <img src="IMG/interrogacao.png" height="35px" width="35px">
-                    </div>
-                </div>
+            <div class="status-list" id="status-list">
+                <!-- A lista de alunos será preenchida via JavaScript -->
             </div>
         </div>
     </div>
@@ -230,55 +216,25 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-    function setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
-    }
-
-    function getCookie(name) {
-        const decodedCookies = decodeURIComponent(document.cookie);
-        const cookiesArray = decodedCookies.split('; ');
-        for (const cookie of cookiesArray) {
-            const [key, value] = cookie.split('=');
-            if (key === name) {
-                return value;
-            }
-        }
-        return null;
-    }
-
-</script>
-
-<script>
     const socket = io();
-    let prova = null
+    let prova = null;
     const params = new URLSearchParams(window.location.search);
     let questionIndex = 0;
     const proximaQuestao = document.getElementById('proximaQuestao');
 
-    provaId = params.get('provaId');
+    let provaId = params.get('provaId') || getCookie('provaId');
+    let sala = params.get('sala') || getCookie('sala');
+    let nome = params.get('nome') || getCookie('nome');
+
     if (provaId) {
         setCookie('provaId', provaId, 1);
-    } else {
-        provaId = getCookie('provaId');
     }
-
-    sala = params.get('sala');
     if (sala) {
         setCookie('sala', sala, 1);
-    } else {
-        sala = getCookie('sala');
     }
-
-    // Captura o nome dos parâmetros ou do cookie
-    let nome = params.get('nome');
     if (nome) {
         setCookie('nome', nome, 1);
-    } else {
-        nome = getCookie('nome');
     }
-
 
     socket.emit('join-quiz', { roomId: sala, nome, isProfessor: true });
 
@@ -286,9 +242,6 @@
     axios.get('/provas/' + provaId)
         .then((response) => {
             prova = response.data;
-            console.log(prova);
-
-            // Ensure that prova and questoes exist before emitting
             if (prova && prova.questoes && prova.questoes.length > 0) {
                 socket.emit('primeira-questao', { roomId: sala, provaId: provaId, question: prova.questoes[0] });
             } else {
@@ -300,14 +253,12 @@
         });
 
     socket.on('alunos-count', ({ count }) => {
-        console.log(count);
         document.getElementById('numAlunos').innerHTML = count - 1;
+        socket.emit('next-question', { roomId: sala, currentQuestion: prova.questoes[questionIndex] });
     });
-
 
     proximaQuestao.addEventListener('click', (e) => {
         e.preventDefault();
-
         questionIndex++;
         if (questionIndex < prova.questoes.length) {
             document.getElementById('numQuestao').innerHTML = questionIndex + 1;
@@ -317,6 +268,41 @@
         }
     });
 
-</script>
+    socket.on('answers-count', (counts) => {
+        document.getElementById('count-A').innerText = counts.A;
+        document.getElementById('count-B').innerText = counts.B;
+        document.getElementById('count-C').innerText = counts.C;
+        document.getElementById('count-D').innerText = counts.D;
+        document.getElementById('count-E').innerText = counts.E;
+    });
 
+    socket.on('status-list', (status) => {
+        let statusList = document.getElementById('status-list');
+        statusList.innerHTML = '';
+        status.forEach(student => {
+            let item = document.createElement('div');
+            item.className = 'status-item';
+            item.innerHTML = `<div class="avatar">${student.nome}</div><div class="status">${student.status}</div>`;
+            statusList.appendChild(item);
+        });
+    });
+
+    function setCookie(name, value, days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    }
+
+    function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+</script>
 </html>

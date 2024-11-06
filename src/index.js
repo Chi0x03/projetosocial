@@ -82,78 +82,88 @@ app.get('/sala.html', isAuthenticated, (req, res) => {
   res.render('sala');
 });
 
+app.get('/ajuda.html', (req, res) => {
+  res.render('ajuda');
+});
+
+app.get('/resultados.html' /*, isAuthenticated*/, (req, res) => {
+  res.render('resultados');
+});
+
+app.get('/BancoQuestoes.html', (req, res) => {
+  res.render('BancoQuestoes');
+});
+
+app.get('/MinhasQuestoes.html', (req, res) => {
+  res.render('MinhasQuestoes');
+});
+
+app.get('/MontarP1.html', (req, res) => {
+  res.render('MontarP1');
+});
+
+app.get('/MontarP2.html', (req, res) => {
+  res.render('MontarP2');
+});
 
 // Rota para os alunos se conectarem à salaconst currentQuestions = {}; // Objeto para armazenar a questão atual de cada sala
 const currentQuestions = {};
+const answersCount = {}; // Armazena a contagem de respostas por sala
 
 io.on('connection', (socket) => {
   console.log('Aluno conectado', socket.id);
 
-  // Identificar se o usuário é professor
   socket.on('join-quiz', ({ roomId, nome, isProfessor }) => {
     socket.join(roomId);
-    socket.isProfessor = isProfessor; // Marca se o usuário é o professor
-    console.log(`Aluno ${nome} entrou na sala ${roomId}`);
+    console.log(`Questão atual: ${currentQuestions[roomId]}`);
+    socket.isProfessor = isProfessor;
 
-    // Envia a contagem de alunos na sala
-    const room = socket.adapter.rooms.get(roomId);
-    const count = room ? room.size : 0; // Verifica se a sala existe
-    io.to(roomId).emit('alunos-count', { count, aluno: nome, id: socket.id });
-
-    // Envia a questão atual para o aluno que entrou
-    if (currentQuestions[roomId]) {
-      socket.emit('question', currentQuestions[roomId]); // Envia a questão atual
+    // Inicializa a contagem de respostas para a sala
+    if (!answersCount[roomId]) {
+      answersCount[roomId] = { A: 0, B: 0, C: 0, D: 0, E: 0 };
     }
+
+    // Envia a contagem inicial para o professor ao entrar na sala
+    if (isProfessor) {
+      socket.emit('answers-count', answersCount[roomId]);
+    }
+
+    console.log(`Aluno ${nome} conectado na sala ${roomId}`, socket.id);
 
     socket.on('disconnect', () => {
       console.log('Aluno desconectado', socket.id);
-      
-      // Verifica se a sala ainda existe e emite a contagem atualizada
-      const room = socket.adapter.rooms.get(roomId);
-      const count = room ? room.size : 0;
-      if (count > 0) {
-        io.to(roomId).emit('alunos-count', { count, id: socket.id });
-      }
-
-      // Se o professor desconectar, desconectar todos os alunos
-      if (socket.isProfessor) {
-        console.log(`Professor desconectado, desconectando alunos da sala ${roomId}`);
-        const socketsInRoom = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-        socketsInRoom.forEach((studentId) => {
-          if (studentId !== socket.id) { // Não desconectar o próprio professor
-            const studentSocket = io.sockets.sockets.get(studentId);
-            if (studentSocket) {
-              studentSocket.emit('redirect-to-insert-code'); // Emitir evento para redirecionar
-              studentSocket.disconnect(); // Desconecta o aluno
-            }
-          }
-        });
-      }
-
-      // Remove os dados da sala se ela estiver vazia
-      if (!room || room.size === 0) {
-        console.log(`Sala ${roomId} está vazia. Removendo dados.`);
-        delete currentQuestions[roomId]; // Remove as questões associadas à sala
-      }
+      io.to(roomId).emit('aluno-desconectado', { id: socket.id });
     });
   });
 
   socket.on('primeira-questao', ({ roomId, provaId, question }) => {
-    currentQuestions[roomId] = { question, provaId }; // Armazena a questão atual
+    currentQuestions[roomId] = { question, provaId };
     io.to(roomId).emit('question', { question, provaId });
   });
 
-  // Recebe a solicitação para passar para a próxima questão
   socket.on('next-question', async ({ roomId, currentQuestion }) => {
-    currentQuestions[roomId] = currentQuestion; // Atualiza a questão atual
+    // Reinicia a contagem de respostas para a nova questão
+    answersCount[roomId] = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+    currentQuestions[roomId] = currentQuestion;
+
+    // Emite a nova questão e a contagem reiniciada para todos na sala
     io.to(roomId).emit('question', currentQuestion);
+    io.to(roomId).emit('answers-count', answersCount[roomId]); // Envia a contagem zerada ao professor
   });
 
-  socket.on('answer', ({ roomId, itemMarcado, nome }) => {
-    console.log(`Aluno ${nome} respondeu com ${itemMarcado}`);
-    io.to(roomId).emit('answer-prof', { itemMarcado, nome });
+  socket.on('answer', ({ roomId, itemMarcado, alunoId }) => {
+    // Incrementa a contagem de respostas
+    if (!answersCount[roomId]) answersCount[roomId] = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+    answersCount[roomId][itemMarcado]++;
+    
+    // Envia a atualização ao professor com a contagem de respostas
+    io.to(roomId).emit('update-answer-count', answersCount[roomId]);
+
+    // Notifica o professor que o aluno respondeu para atualizar o ícone
+    io.to(roomId).emit('aluno-answered', { alunoId });
   });
 });
+
 
 
 

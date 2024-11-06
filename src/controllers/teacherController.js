@@ -21,20 +21,20 @@ const getTeacher = async (req, res) => {
 };
 
 
-const updateTeacher = async (req, res) => {
-  let { instituicao, disciplina } = req.body;
+const updateTeacher = async (req, res) => {;
   const professorId = req.session.professorId
+  console.log(req.body)
 
   try {
-    const professorEditado = await prisma.professor.update({
+    let professorEditado = await prisma.professor.update({
       where: {
         id: professorId
       },
-      data: {
-        disciplina,
-        instituicao
-      }
+      data: req.body
     });
+
+    professorEditado.senha = undefined;
+    
     res.status(201).json(professorEditado);
 
   } catch (error) {
