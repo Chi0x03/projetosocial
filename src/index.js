@@ -98,13 +98,13 @@ app.get('/MinhasQuestoes.html', (req, res) => {
   res.render('MinhasQuestoes');
 });
 
-app.get('/MontarP1.html', (req, res) => {
-  res.render('MontarP1');
-});
+// app.get('/MontarP1.html', (req, res) => {
+//   res.render('MontarP1');
+// });
 
-app.get('/MontarP2.html', (req, res) => {
-  res.render('MontarP2');
-});
+// app.get('/MontarP2.html', (req, res) => {
+//   res.render('MontarP2');
+// });
 
 app.get('/RankPG.html', (req, res) => {
   res.render('RankPG');
