@@ -79,7 +79,19 @@ const addAnswer = async (req, res) => {
 const getRanking = async (req, res) => {
   try {
     const provaId = parseInt(req.params.id);
-    const ranking = await prisma.ranking.findFirst({
+
+    const count = await prisma.prova.findUnique({
+      where: { id: provaId },
+      include: {
+        _count: {
+          select: {
+            questoes: true
+          }
+        }
+      }
+    });
+
+    const ranking = await prisma.ranking.findMany({
       where: { provaId },
       orderBy: [
         {
@@ -88,11 +100,23 @@ const getRanking = async (req, res) => {
         {
           tempoDeResposta: 'asc'
         }
-      ]
+      ],
+      select: {
+        nomeAluno: true,
+        totalAcertos: true,
+        tempoDeResposta: true,
+        provaId: true,
+      }
     });
 
+    const rankingComTotalQuestoes = ranking.map((item) => ({
+      ...item,
+      totalQuestoes: count._count.questoes,
+      acertos: item.acertos
+    }));
+
     // Envia a resposta com os dados do ranking
-    res.json(ranking);
+    res.json(rankingComTotalQuestoes);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao obter ranking' });

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PublicClass Ranking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -367,17 +368,17 @@
             gap: 15px;
         }
 
-        .perfilft_prata{
+        .perfilft_prata {
             border: 4px solid #e1e1e1;
             border-radius: 50%;
         }
 
-        .perfilft_ouro{
+        .perfilft_ouro {
             border: 4px solid #f8df24;
             border-radius: 50%;
         }
 
-        .perfilft_bronze{
+        .perfilft_bronze {
             border: 4px solid #ff9100;
             border-radius: 50%;
         }
@@ -399,15 +400,15 @@
                         <h1>2</h1>
                         <div class="resul">
                             <img src="IMG/correto_rank.png" id="img_lres">
-                            <p>20/20 </p>
+                            <p>00/00</p>
                         </div>
 
                         <div class="temp">
                             <img src="IMG/rel_ranking.png" id="img_lres">
-                            <p>04:30</p>
+                            <p>99:99</p>
 
                         </div>
-                        <h3 style="text-align: center;">Pedro</h3> <!-- jogado 2º lugar -->
+                        <h3 style="text-align: center;">Nome</h3> <!-- jogado 2º lugar -->
 
                         <img class="perfilft_prata mt-4" src="IMG/avatar.png" alt="">
 
@@ -417,17 +418,17 @@
                         <h1>1</h1>
                         <div class="resul">
                             <img src="IMG/correto_rank.png" id="img_lres">
-                            <p>20/20</p>
+                            <p>00/00</p>
 
                         </div>
 
                         <div class="temp">
                             <img src="IMG/rel_ranking.png" id="img_lres">
-                            <p>04:30</p>
+                            <p>99:99</p>
 
                         </div>
 
-                        <h3 style="text-align: center;">Juuan</h3><!-- jogado 1º lugar -->
+                        <h3 style="text-align: center;">Nome</h3><!-- jogado 1º lugar -->
                         <img class="perfilft_ouro" src="IMG/avatar.png" alt="">
                     </div>
                     <div class="posicao3">
@@ -435,16 +436,16 @@
                         <h1>3</h1>
                         <div class="resul">
                             <img src="IMG/correto_rank.png" id="img_lres">
-                            <p>20/20</p>
+                            <p>00/00</p>
 
                         </div>
 
                         <div class="temp">
                             <img src="IMG/rel_ranking.png" id="img_lres">
-                            <p>02:40</p>
+                            <p>99:99</p>
 
                         </div>
-                        <h3 style="text-align: center;">Riquelme</h3><!-- jogado 3º lugar -->
+                        <h3 style="text-align: center;">Nome</h3><!-- jogado 3º lugar -->
                         <img class="perfilft_bronze" src="IMG/avatar.png" alt="">
                     </div>
                 </div>
@@ -467,18 +468,60 @@
     </div>
 
     <script>
-        const dadosRanking = [
-            { nome: "Juuan Pedu", pontuacao: "15/20", tempo: "10:10", img: "IMG/avatar.png" },
+        let dadosRanking = [];
 
-        ];
+        const params = new URLSearchParams(window.location.search);
+
+        const provaId = params.get('id');
+
+        axios.get('/vista_pedagogica/ranking/' + provaId)
+            .then((response) => {
+                const dadosRanking = response.data;
+
+                // Referências ao pódio e à lista de classificação
+                const posicao1 = document.querySelector('.posicao1');
+                const posicao2 = document.querySelector('.posicao2');
+                const posicao3 = document.querySelector('.posicao3');
+                const rankingList = document.querySelector('.ranking-list'); // Adicione uma lista para o restante dos jogadores
+
+                // Exibe os três primeiros no pódio
+                dadosRanking.forEach((dado, index) => {
+                    if (index === 0) {
+                        posicao1.querySelector('h3').textContent = dado.nomeAluno;
+                        posicao1.querySelector('.resul p').textContent = `${dado.totalAcertos}/${dado.totalQuestoes}`;
+                        posicao1.querySelector('.temp p').textContent = formatTime(dado.tempoDeResposta);
+                    } else if (index === 1) {
+                        posicao2.querySelector('h3').textContent = dado.nomeAluno;
+                        posicao2.querySelector('.resul p').textContent = `${dado.totalAcertos}/${dado.totalQuestoes}`;
+                        posicao2.querySelector('.temp p').textContent = formatTime(dado.tempoDeResposta);
+                    } else if (index === 2) {
+                        posicao3.querySelector('h3').textContent = dado.nomeAluno;
+                        posicao3.querySelector('.resul p').textContent = `${dado.totalAcertos}/${dado.totalQuestoes}`;
+                        posicao3.querySelector('.temp p').textContent = formatTime(dado.tempoDeResposta);
+                    } else {
+                        // Adiciona os demais jogadores na lista
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                    <img src="${dado.img}" alt="${dado.nomeAluno}">
+                    <span>${dado.nomeAluno} - ${dado.totalAcertos}/${dado.totalQuestoes} 
+                    <span class="tempo">${formatTime(dado.tempoDeResposta)}</span></span>
+                `;
+                        rankingList.appendChild(li);
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        // função que converte segundos no formato mm:ss
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
 
         const rankingList = document.getElementById('ranking-list');
-
-        dadosRanking.forEach((dado) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<img src="${dado.img}" alt="${dado.nome}"><span>${dado.nome} - ${dado.pontuacao} <span class="tempo">${dado.tempo}</span></span>`;
-            rankingList.appendChild(li);
-        });
 
         const menuButton = document.getElementById('menu');
         const barraLateral = document.getElementById('barra-lateral');
@@ -486,6 +529,24 @@
         menuButton.addEventListener('click', () => {
             barraLateral.classList.toggle('oculta');
         });
+
+        function setCookie(name, value, days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

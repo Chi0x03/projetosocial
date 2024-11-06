@@ -292,6 +292,7 @@
             socket.emit('finish-quiz', { roomId: sala, provaId });
             questionIndex = 0;
             localStorage.setItem('questionIndex', questionIndex);
+            window.location.href = '/RankPG.html?id=' + provaId;
         }
 
         // loop para alterar a imagem de todos os status para interrogação

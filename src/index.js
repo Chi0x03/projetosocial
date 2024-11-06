@@ -106,6 +106,10 @@ app.get('/MontarP2.html', (req, res) => {
   res.render('MontarP2');
 });
 
+app.get('/RankPG.html', (req, res) => {
+  res.render('RankPG');
+})
+
 // Rota para os alunos se conectarem à salaconst currentQuestions = {}; // Objeto para armazenar a questão atual de cada sala
 const currentQuestions = {};
 const answersCount = {}; // Armazena a contagem de respostas por sala
