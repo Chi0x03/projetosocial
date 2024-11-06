@@ -354,6 +354,12 @@
         statusList.appendChild(item);
     });
 
+    socket.on('aluno-desconectado', ({ id }) => {
+        let item = document.getElementById(id);
+        if (item) {
+            item.remove();
+        }
+    });
 
     socket.on('aluno-answered', ({ alunoId }) => {
         let item = document.getElementById(alunoId);
