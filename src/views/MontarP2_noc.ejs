@@ -446,7 +446,7 @@
             <div class="user-name"> <!-- Div que contém o nome e a imagem do usuário -->
                 <img class="perfil_ft" src="" alt="" style="margin-left: 15px;">
                 <!-- Imagem do perfil, src deve ser preenchido -->
-                <h2 id="nomeProfessor">user</h2>
+                <h2>user</h2> <!-- Nome do usuário -->
             </div>
 
             <!-- Botões de Navegação -->
@@ -475,44 +475,34 @@
 
                     <div class="contentPG"> <!-- Div para conteúdo principal da página -->
                         <div class="top-buttons"> <!-- Div para os botões do topo -->
-                            <span onclick="window.location.href='MontarP1.html'"
-                                style="display: inline-block; cursor: pointer;">
-                                <svg id="voltar" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
-                                    fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 20 20"
-                                    style="color: #FF8C00;">
-                                    <path fill-rule="evenodd"
-                                        d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
-                                </svg>
-                            </span>
-                            <button onclick="abrirPasta()" class="btn minhas">Questões a serem adicionadas na
-                                prova</button> <!-- Botão para minhas questões -->
+                            <button onclick="window.location.href='MinhasQuestoes.html'" class="btn minhas">Minhas
+                                questões</button> <!-- Botão para minhas questões -->
                         </div>
                         <hr class="divider"> <!-- Linha horizontal separadora -->
-                        <h2 class="titulo-matematica"></h2>
-                        <!-- Título da seção de Matemática -->
+                        <h2 class="titulo-matematica">Descritores de Matemática</h2> <!-- Título da seção de Matemática -->
                         <div class="tabela-container"> <!-- Container para a tabela de questões -->
 
                             <table class="tabela"> <!-- Tabela para exibir as questões -->
                                 <tbody id="tabela-descritores">
-
+                                    
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Botão voltar para a página anterior -->
-                        <!-- <div style="position: fixed; top: 86%; left: 35%;">
-                             Posiciona o botão de voltar no canto inferior da tela 
+                        <div style="position: fixed; top: 86%; left: 35%;">
+                            <!-- Posiciona o botão de voltar no canto inferior da tela -->
                             <span onclick="window.location.href='MontarP1.html'"
                                 style="display: inline-block; cursor: pointer;">
-                                <!-- Ação de redirecionamento ao clicar 
+                                <!-- Ação de redirecionamento ao clicar -->
                                 <svg id="voltar" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
                                     fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 20 20"
-                                    style="color: #FF8C00;">  Ícone SVG de voltar
+                                    style="color: #FF8C00;"> <!-- Ícone SVG de voltar -->
                                     <path fill-rule="evenodd"
                                         d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
                                 </svg>
                             </span>
-                        </div> -->
+                        </div>
 
                         <!-- <button class="criar-prova">criar prova</button> Botão para criar uma nova prova -->
                     </div>
@@ -550,8 +540,6 @@
         </span>
         <div class="modal-content"> <!-- Conteúdo interno do modal -->
 
-            <h1 id="questao">Prova que você está criando: </h1>
-
             <table class="tabela"> <!-- Tabela para exibir as questões -->
                 <thead> <!-- Cabeçalho da tabela -->
                     <tr>
@@ -559,12 +547,12 @@
                         <th class="questao">Conteúdo da questão</th> <!-- Cabeçalho para o conteúdo da questão -->
                     </tr>
                 </thead>
-                <tbody id="tabela-modal"> <!-- Corpo da tabela, onde as questões serão listadas -->
+                <tbody> <!-- Corpo da tabela, onde as questões serão listadas -->
                     <!-- Exemplo de linha de dados -->
                     <tr> <!-- Linha da tabela para uma questão -->
                         <td class="numero">1</td> <!-- Número da questão -->
                         <td class="questao"> <!-- Conteúdo da questão -->
-                            <div class="questao"> <!-- Div para conteúdo da questão -->
+                            <div class="questaoC"> <!-- Div para conteúdo da questão -->
                                 AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
                                 AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
                                 AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
@@ -581,92 +569,64 @@
                             <!-- Ícone de lixeira para excluir -->
                         </td>
                     </tr>
+                    <!-- Repetir a estrutura acima para outras questões -->
+                    <tr>
+                        <td class="numero">2</td>
+                        <td class="questao">
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
+                        </td>
+                        <td class="icone">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Ícone de Lixeira">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="numero">3</td>
+                        <td class="questao">
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
+                        </td>
+                        <td class="icone">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Ícone de Lixeira">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="numero">4</td>
+                        <td class="questao">
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
+                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
+                        </td>
+                        <td class="icone">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Ícone de Lixeira">
+                        </td>
+                    </tr>
+                    <!-- Mais linhas serão adicionadas dinamicamente -->
                 </tbody>
             </table>
-
-            <form id="formProva" style="margin-top: 20px;">
-                <input type="text" id="nomeProva"
-                    style="border-radius: 40px; text-align: center; border: none; outline: none;" name="nomeProva"
-                    placeholder="Nome da prova" required>
-                <button type="submit" class="btn">Criar prova</button>
-            </form>
         </div>
-    </div>
 
-    <script>
-        // Função para abrir o modal
-        function abrirPasta() {
-            limparTabela();
-            preencherTabela();
-            document.getElementById("myModal").style.display = "block";
-        }
-
-        // função para preencher tabela com questões no localstorage
-        function preencherTabela() {
-            const questoes = JSON.parse(localStorage.getItem('questoes'));
-            if (!questoes) {
-                return;
-            }
-            questoes.map((questao, index) => {
-                const linha = document.createElement("tr");
-                const numero = document.createElement("td");
-                const questaoConteudo = document.createElement("td");
-                const icone = document.createElement("td");
-                const imagem = document.createElement("img");
-                imagem.src = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png";
-                imagem.height = 20;
-                imagem.width = 20;
-                icone.style.cursor = "pointer";
-                icone.addEventListener("click", () => {
-                    // Remover questão do localstorage
-                    questoes.splice(index, 1);
-                    localStorage.setItem("questoes", JSON.stringify(questoes));
-                    fecharModal();
-                    abrirPasta();
-                })
-                icone.appendChild(imagem);
-                numero.textContent = index + 1;
-                questaoConteudo.textContent = questao.enunciado;
-                linha.appendChild(numero);
-                linha.appendChild(questaoConteudo);
-                linha.appendChild(icone);
-                document.getElementById("tabela-modal").appendChild(linha);
-            });
-        }
-
-        // função para limpar tabela-modal
-        function limparTabela() {
-            document.getElementById("tabela-modal").innerHTML = "";
-        }
-
-        // Função para fechar o modal
-        function fecharModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        // Fecha o modal ao clicar fora dele
-        window.onclick = function (event) {
-            const modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                fecharModal();
-            }
-        }
-
-        function limparLocalStorage() {
-            localStorage.removeItem('questoes');
-        }
-
-        // função para retornar um array de id das provas que estão no localstorage
-        function getIdsProvas() {
-            const questoes = JSON.parse(localStorage.getItem('questoes'));
-
-            if (!questoes) {
-                return [];
+        <script>
+            // Função para abrir o modal
+            function abrirPasta() {
+                document.getElementById("myModal").style.display = "block"; // Altera o estilo do modal para exibir
             }
 
-            return questoes.map(questao => questao.id);
-        }
-    </script>
+            // Função para fechar o modal
+            function fecharModal() {
+                document.getElementById("myModal").style.display = "none"; // Altera o estilo do modal para ocultar
+            }
+
+            // Fecha o modal ao clicar fora dele
+            window.onclick = function (event) {
+                const modal = document.getElementById("myModal"); // Referência ao modal
+                if (event.target == modal) { // Verifica se o clique foi fora do modal
+                    fecharModal(); // Fecha o modal
+                }
+            }
+        </script>
     </div>
 
 
@@ -688,35 +648,16 @@
 </body>
 
 <script>
-    function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        if (match) {
-            return match[2];
-        }
-        return null;
-    }
-
-    // Função para definir um cookie com nome, valor e tempo de expiração
-    function setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Expiração em dias
-        const expires = "expires=" + date.toUTCString();
-        document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    }
-</script>
-
-<script>
     const params = new URLSearchParams(window.location.search);
-    let disciplina = params.get('disciplina') || getCookie('disciplina');
+    const disciplina = params.get('disciplina');
+
+    // guarde o valor da disciplina em um cookie
+    document.cookie = 'disciplina=' + disciplina;
     // alert(disciplina);
     if (disciplina == 'Matemática' || disciplina == 'Português') {
-        setCookie('disciplina', disciplina, 1);
     } else {
         window.location.href = 'MontarP1.html';
     }
-
-    const textoDescritor = document.querySelector('.titulo-matematica');
-    textoDescritor.textContent = `Descritores de ${disciplina}`;
 
     axios.get('/descritores/descritor-by-disciplina/' + disciplina)
         .then(function (response) {
@@ -740,7 +681,7 @@
 
                 tdNumero.textContent = descritor.codigo;
                 tdQuestao.textContent = descritor.descricao;
-
+                
                 row.appendChild(tdNumero);
                 row.appendChild(tdQuestao);
                 row.appendChild(tdBotao);
@@ -751,48 +692,7 @@
             console.log(error);
         })
 
-    const form = document.querySelector('#formProva');
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const nomeProva = document.getElementById('nomeProva').value;
-        const questoesId = getIdsProvas();
 
-        console.log(questoesId)
-
-        if (questoesId.length === 0) {
-            alert('Nenhuma questão selecionada');
-            return;
-        }
-
-        axios.post('/provas', {
-            titulo: nomeProva
-        })
-            .then(function (response) {
-                axios.post('/provas/' + response.data.id + '/questoes', {
-                    questaoIds: questoesId
-                }).then(function (response) {
-                    limparLocalStorage()
-                    console.log(response);
-                    window.location.href = 'MinhasProvas.html';
-                }).catch(function (error) {
-                    console.log(error);
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    })
-
-    axios.get('/professor')
-        .then((response) => {
-            const nome = document.querySelector("#nomeProfessor");
-            // Campos de texto
-            nome.innerHTML = response.data.nome;
-            console.log(response.data);
-        })
-        .catch((e) => {
-            console.log(e);
-        });
 </script>
 
 </html>

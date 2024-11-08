@@ -112,43 +112,48 @@ const createExam = async (req, res) => {
 
 // Obtém uma prova específica
 const getExam = async (req, res) => {
-  const id = parseInt(req.params.id);
-  const professorId = req.session.professorId;
+  try {
+    const id = parseInt(req.params.id);
+    const professorId = req.session.professorId;
 
-  const prova = await prisma.prova.findUnique({
-    include: {
-      questoes: {
-        select: {
-          questao: { // Substitua 'questao' pelo nome correto do relacionamento
-            select: {
-              id: true,
-              enunciado: true,
-              alternativaA: true,
-              alternativaB: true,
-              alternativaC: true,
-              alternativaD: true,
-              alternativaE: true,
-              respostaCorreta: true,
-              explicacao: true,
-              publica: true,
-              professorId: true,
-              descritorId: true,
-              disciplina: true,
+    const prova = await prisma.prova.findUnique({
+      include: {
+        questoes: {
+          select: {
+            questao: {
+              select: {
+                id: true,
+                enunciado: true,
+                alternativaA: true,
+                alternativaB: true,
+                alternativaC: true,
+                alternativaD: true,
+                alternativaE: true,
+                respostaCorreta: true,
+                explicacao: true,
+                publica: true,
+                professorId: true,
+                descritorId: true,
+                disciplina: true,
+              }
             }
           }
         }
-      }
-    },
-    where: { id, professorId }
-  });
-
-  if (prova) {
-    res.json({
-      ...prova,
-      questoes: prova.questoes.map(q => q.questao) // Extraí apenas as informações de cada questão
+      },
+      where: { id, professorId }
     });
-  } else {
-    res.status(404).json({ error: 'Prova não encontrada' });
+
+    if (prova) {
+      res.json({
+        ...prova,
+        questoes: prova.questoes.map(q => q.questao)
+      });
+    } else {
+      res.status(404).json({ error: 'Prova não encontrada' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao obter a prova' });
   }
 };
 
@@ -173,6 +178,8 @@ const addQuestionsToExam = async (req, res) => {
   const provaId = parseInt(req.params.id);
   const { questaoIds } = req.body;
 
+  console.log(questaoIds);
+
   if (!Array.isArray(questaoIds)) {
     return res.status(400).json({ error: 'questaoIds deve ser um array de IDs' });
   }
@@ -183,12 +190,13 @@ const addQuestionsToExam = async (req, res) => {
       questaoId: id,
     }));
 
-    await prisma.provasQuestao.createMany({
+    await prisma.provasQuestoes.createMany({
       data: provasQuestoes
     });
 
     res.status(200).json({ message: 'Questões associadas com sucesso à prova' });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Erro ao associar questões à prova' });
   }
 };

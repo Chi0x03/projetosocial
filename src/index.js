@@ -82,7 +82,7 @@ app.get('/sala.html', isAuthenticated, (req, res) => {
   res.render('sala');
 });
 
-app.get('/ajuda.html', (req, res) => {
+app.get('/ajuda.html', isAuthenticated, (req, res) => {
   res.render('ajuda');
 });
 
@@ -90,21 +90,21 @@ app.get('/resultados.html' /*, isAuthenticated*/, (req, res) => {
   res.render('resultados');
 });
 
-app.get('/BancoQuestoes.html', (req, res) => {
+app.get('/BancoQuestoes.html', isAuthenticated, (req, res) => {
   res.render('BancoQuestoes');
 });
 
-app.get('/MinhasQuestoes.html', (req, res) => {
-  res.render('MinhasQuestoes');
+app.get('/MinhasProvas.html', isAuthenticated, (req, res) => {
+  res.render('MinhasProvas');
 });
 
-// app.get('/MontarP1.html', (req, res) => {
-//   res.render('MontarP1');
-// });
+app.get('/MontarP1.html', isAuthenticated, (req, res) => {
+  res.render('MontarP1');
+});
 
-// app.get('/MontarP2.html', (req, res) => {
-//   res.render('MontarP2');
-// });
+app.get('/MontarP2.html', isAuthenticated, (req, res) => {
+  res.render('MontarP2');
+});
 
 app.get('/RankPG.html', (req, res) => {
   res.render('RankPG');

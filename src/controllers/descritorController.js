@@ -18,6 +18,27 @@ const editDescritor = async (req, res) => {
   }
 }
 
+const getDescritorByDisciplina = async (req, res) => {
+  const disciplinaString = req.params.disciplina
+
+  if (disciplinaString == 'Matemática' || disciplinaString == 'Português') {
+  } else {
+    return res.status(400).json({ error: "Disciplina inválida" })
+  }
+
+  try {
+    const descritores = await prisma.descritor.findMany({
+      where: {
+        disciplina: disciplinaString
+      }
+    })
+    return res.json(descritores)
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Erro ao buscar descritores" })
+  }
+}
+
 const createDescritor = async (req, res) => {
   const data = req.body;
 
@@ -79,5 +100,6 @@ module.exports = {
   createDescritor,
   getAllDescritors,
   getDescritor,
-  deleteDescritor
+  deleteDescritor,
+  getDescritorByDisciplina
 }

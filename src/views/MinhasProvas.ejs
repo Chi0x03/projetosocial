@@ -473,200 +473,31 @@
                         </div>
                     </div>
 
-                    <div class="contentPG"> <!-- Div para conteúdo principal da página -->
-                        <div class="top-buttons"> <!-- Div para os botões do topo -->
-                            <span onclick="window.location.href='MontarP1.html'"
-                                style="display: inline-block; cursor: pointer;">
-                                <svg id="voltar" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
-                                    fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 20 20"
-                                    style="color: #FF8C00;">
-                                    <path fill-rule="evenodd"
-                                        d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
-                                </svg>
-                            </span>
-                            <button onclick="abrirPasta()" class="btn minhas">Questões a serem adicionadas na
-                                prova</button> <!-- Botão para minhas questões -->
-                        </div>
-                        <hr class="divider"> <!-- Linha horizontal separadora -->
-                        <h2 class="titulo-matematica"></h2>
-                        <!-- Título da seção de Matemática -->
-                        <div class="tabela-container"> <!-- Container para a tabela de questões -->
+                    <div class="contentPG">
+                        <hr class="divider">
+                        <h2 class="titulo-matematica">Suas provas</h2>
 
-                            <table class="tabela"> <!-- Tabela para exibir as questões -->
-                                <tbody id="tabela-descritores">
+                        <div class="tabela-container">
+
+                            <table class="tabela">
+                                <thead>
+                                    <tr>
+                                        <th>Data de criação</th>
+                                        <th>Título da Prova</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                <tbody id="tabela-provas">
 
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Botão voltar para a página anterior -->
-                        <!-- <div style="position: fixed; top: 86%; left: 35%;">
-                             Posiciona o botão de voltar no canto inferior da tela 
-                            <span onclick="window.location.href='MontarP1.html'"
-                                style="display: inline-block; cursor: pointer;">
-                                <!-- Ação de redirecionamento ao clicar 
-                                <svg id="voltar" xmlns="http://www.w3.org/2000/svg" width="80" height="80"
-                                    fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 20 20"
-                                    style="color: #FF8C00;">  Ícone SVG de voltar
-                                    <path fill-rule="evenodd"
-                                        d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
-                                </svg>
-                            </span>
-                        </div> -->
-
-                        <!-- <button class="criar-prova">criar prova</button> Botão para criar uma nova prova -->
                     </div>
 
-                    <!-- Botão para abrir a pasta -->
-                    <!-- <div style="position: fixed; top: 86%; left: 85%;"> 
-                        <span onclick="abrirPasta()" style="display: inline-block; cursor: pointer;">
-                            
-                            <svg id="pasta" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none"
-                                stroke="#ffffff" stroke-width="1.5" class="bi bi-folder" viewBox="0 0 16 16">
-                                
-                                <path d="M9.828 4a3 3 0 0 1 2.272 1H14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h4.5a2 2 0 
-                            0 1 1.854 1.276L9.828 4z" />
-                            </svg>
-                        </span>
-                    </div> -->
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-
-
-    <!-- O Modal -->
-    <div id="myModal" class="modal"> <!-- Container principal do modal, com id para referência no JavaScript -->
-        <span class="close" onclick="fecharModal()"> <!-- Botão de fechar o modal -->
-            <svg id="voltar" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor"
-                class="bi bi-arrow-left-short" viewBox="0 0 20 20" style="color: #FF8C00;"> <!-- Ícone SVG de fechar -->
-                <path fill-rule="evenodd"
-                    d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
-            </svg>
-        </span>
-        <div class="modal-content"> <!-- Conteúdo interno do modal -->
-
-            <h1 id="questao">Prova que você está criando: </h1>
-
-            <table class="tabela"> <!-- Tabela para exibir as questões -->
-                <thead> <!-- Cabeçalho da tabela -->
-                    <tr>
-                        <th class="numero">Questão</th> <!-- Cabeçalho para o número da questão -->
-                        <th class="questao">Conteúdo da questão</th> <!-- Cabeçalho para o conteúdo da questão -->
-                    </tr>
-                </thead>
-                <tbody id="tabela-modal"> <!-- Corpo da tabela, onde as questões serão listadas -->
-                    <!-- Exemplo de linha de dados -->
-                    <tr> <!-- Linha da tabela para uma questão -->
-                        <td class="numero">1</td> <!-- Número da questão -->
-                        <td class="questao"> <!-- Conteúdo da questão -->
-                            <div class="questao"> <!-- Div para conteúdo da questão -->
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                            </div>
-                        </td>
-                        <td class="icone"> <!-- Coluna para ícone de ação -->
-                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png" alt="Ícone de Lixeira">
-                            <!-- Ícone de lixeira para excluir -->
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <form id="formProva" style="margin-top: 20px;">
-                <input type="text" id="nomeProva"
-                    style="border-radius: 40px; text-align: center; border: none; outline: none;" name="nomeProva"
-                    placeholder="Nome da prova" required>
-                <button type="submit" class="btn">Criar prova</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Função para abrir o modal
-        function abrirPasta() {
-            limparTabela();
-            preencherTabela();
-            document.getElementById("myModal").style.display = "block";
-        }
-
-        // função para preencher tabela com questões no localstorage
-        function preencherTabela() {
-            const questoes = JSON.parse(localStorage.getItem('questoes'));
-            if (!questoes) {
-                return;
-            }
-            questoes.map((questao, index) => {
-                const linha = document.createElement("tr");
-                const numero = document.createElement("td");
-                const questaoConteudo = document.createElement("td");
-                const icone = document.createElement("td");
-                const imagem = document.createElement("img");
-                imagem.src = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png";
-                imagem.height = 20;
-                imagem.width = 20;
-                icone.style.cursor = "pointer";
-                icone.addEventListener("click", () => {
-                    // Remover questão do localstorage
-                    questoes.splice(index, 1);
-                    localStorage.setItem("questoes", JSON.stringify(questoes));
-                    fecharModal();
-                    abrirPasta();
-                })
-                icone.appendChild(imagem);
-                numero.textContent = index + 1;
-                questaoConteudo.textContent = questao.enunciado;
-                linha.appendChild(numero);
-                linha.appendChild(questaoConteudo);
-                linha.appendChild(icone);
-                document.getElementById("tabela-modal").appendChild(linha);
-            });
-        }
-
-        // função para limpar tabela-modal
-        function limparTabela() {
-            document.getElementById("tabela-modal").innerHTML = "";
-        }
-
-        // Função para fechar o modal
-        function fecharModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        // Fecha o modal ao clicar fora dele
-        window.onclick = function (event) {
-            const modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                fecharModal();
-            }
-        }
-
-        function limparLocalStorage() {
-            localStorage.removeItem('questoes');
-        }
-
-        // função para retornar um array de id das provas que estão no localstorage
-        function getIdsProvas() {
-            const questoes = JSON.parse(localStorage.getItem('questoes'));
-
-            if (!questoes) {
-                return [];
-            }
-
-            return questoes.map(questao => questao.id);
-        }
-    </script>
     </div>
 
 
@@ -706,82 +537,53 @@
 </script>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    let disciplina = params.get('disciplina') || getCookie('disciplina');
-    // alert(disciplina);
-    if (disciplina == 'Matemática' || disciplina == 'Português') {
-        setCookie('disciplina', disciplina, 1);
-    } else {
-        window.location.href = 'MontarP1.html';
-    }
 
-    const textoDescritor = document.querySelector('.titulo-matematica');
-    textoDescritor.textContent = `Descritores de ${disciplina}`;
-
-    axios.get('/descritores/descritor-by-disciplina/' + disciplina)
+    axios.get('/provas')
         .then(function (response) {
-            const descritores = response.data;
-            console.log(descritores);
-            const tableBody = document.querySelector('#tabela-descritores');
-            descritores.forEach(descritor => {
-                const row = document.createElement('tr');
-                const tdNumero = document.createElement('td');
-                const tdQuestao = document.createElement('td');
-                const tdBotao = document.createElement('td');
+            const provas = response.data;
+            console.log(provas);
+
+            const provasTabela = document.querySelector('#tabela-provas');
+
+            provas.forEach(prova => {
+                const linha = document.createElement('tr');
+                const colunaData = document.createElement('td');
+                const colunaProva = document.createElement('td');
+                const colunaAcoes = document.createElement('td');
+
                 const botao = document.createElement('button');
 
-                botao.textContent = 'Ver questões desse descritor';
-                botao.className = 'ver-btn';
-                botao.addEventListener('click', function () {
-                    window.location.href = 'BancoQuestoes.html?descritor=' + descritor.id;
-                })
+                botao.textContent = 'Iniciar quiz ao vivo';
+                botao.classList.add('ver-btn');
+                colunaAcoes.appendChild(botao);
 
-                tdBotao.appendChild(botao);
+                // Função para formatar a data
+                const data = new Date(prova.dataCriacao);
+                const dia = data.getDate().toString().padStart(2, '0');
+                const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+                const ano = data.getFullYear();
 
-                tdNumero.textContent = descritor.codigo;
-                tdQuestao.textContent = descritor.descricao;
+                const dataFormatada = `${dia}/${mes}/${ano}`;
 
-                row.appendChild(tdNumero);
-                row.appendChild(tdQuestao);
-                row.appendChild(tdBotao);
-                tableBody.appendChild(row);
+                colunaData.textContent = dataFormatada;
+                colunaProva.textContent = prova.titulo;
+                // colunaAcoes.textContent = "Iniciar quiz ao vivo";
+
+                // Configura o conteúdo, o estilo e o evento de clique de colunaAcoes
+                colunaAcoes.style.cursor = "pointer";
+                colunaAcoes.addEventListener('click', () => {
+                    window.location.href = 'professor_questoes.html?provaId=' + prova.id;
+                });
+
+                linha.appendChild(colunaData);
+                linha.appendChild(colunaProva);
+                linha.appendChild(colunaAcoes);
+                provasTabela.appendChild(linha);
             });
         })
         .catch(function (error) {
             console.log(error);
         })
-
-    const form = document.querySelector('#formProva');
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const nomeProva = document.getElementById('nomeProva').value;
-        const questoesId = getIdsProvas();
-
-        console.log(questoesId)
-
-        if (questoesId.length === 0) {
-            alert('Nenhuma questão selecionada');
-            return;
-        }
-
-        axios.post('/provas', {
-            titulo: nomeProva
-        })
-            .then(function (response) {
-                axios.post('/provas/' + response.data.id + '/questoes', {
-                    questaoIds: questoesId
-                }).then(function (response) {
-                    limparLocalStorage()
-                    console.log(response);
-                    window.location.href = 'MinhasProvas.html';
-                }).catch(function (error) {
-                    console.log(error);
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    })
 
     axios.get('/professor')
         .then((response) => {

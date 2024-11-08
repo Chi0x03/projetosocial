@@ -53,6 +53,26 @@ const editQuestion = async (req, res) => {
   }
 }
 
+const getQuestionsByDescritor = async (req, res) => {
+  const descritorId = parseInt(req.params.id);
+  if (typeof descritorId != 'number') {
+    return res.status(500).json({ error: "Id não informado ou inválido" });
+  }
+
+  try {
+    const questoes = await prisma.questao.findMany({
+      where: {
+        descritorId,
+      },
+    });
+
+    res.json(questoes);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Erro ao buscar questões' });
+  }
+};
+
 
 const createQuestion = async (req, res) => {
   let { enunciado, alternativaA, alternativaB, alternativaC, alternativaD, alternativaE, respostaCorreta, explicacao, publica, descritorId, disciplina } = req.body;
@@ -126,5 +146,6 @@ module.exports = {
   getAllQuestions,
   getQuestion,
   editQuestion,
-  deleteQuestion
+  deleteQuestion,
+  getQuestionsByDescritor
 };
