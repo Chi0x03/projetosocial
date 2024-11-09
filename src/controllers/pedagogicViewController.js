@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const getPedagogicView = async (req, res) => {
   try {
     const respostasDeProvas = await prisma.respostasDeProvas.findMany({
-      where: { provaId: req.params.id },
+      where: { provaId: parseInt(req.params.id) },
       include: {
         questao: true,
       },
@@ -15,27 +15,43 @@ const getPedagogicView = async (req, res) => {
     const questoesSet = new Set();
     const alunosMap = new Map();
 
+    // Função de hash para gerar um valor único
+    function hash(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) | 0;
+      }
+      return hash.toString(16);
+    }
+
+    // console.log(respostasDeProvas);
+
     respostasDeProvas.forEach((resposta) => {
       questoesSet.add(resposta.questao.id);
 
-      if (!alunosMap.has(resposta.aluno)) {
-        alunosMap.set(resposta.aluno, {
+      const alunoHash = hash(resposta.aluno);
+
+      if (!alunosMap.has(alunoHash)) {
+        alunosMap.set(alunoHash, {
           nome: resposta.aluno,
           totalAcertos: 0,
           respostas: [],
         });
       }
 
-      const alunoData = alunosMap.get(resposta.aluno);
-      alunoData.respostas.push({
-        questao: resposta.questao.id,
-        itemMarcado: resposta.itemMarcado,
-        acertou: resposta.acertou,
-      });
-
-      if (resposta.acertou) {
-        alunoData.totalAcertos++;
+      const alunoData = alunosMap.get(alunoHash);
+      const respostaExistente = alunoData.respostas.find((r) => r.questao === resposta.questao.id);
+      if (!respostaExistente) {
+        alunoData.respostas.push({
+          questao: resposta.questao.id,
+          itemMarcado: resposta.itemMarcado,
+          acertou: resposta.acertou,
+        });
+        if (resposta.acertou) {
+          alunoData.totalAcertos++;
+        }
       }
+
     });
 
     const totalQuestoes = questoesSet.size;
@@ -50,6 +66,7 @@ const getPedagogicView = async (req, res) => {
     res.status(500).json({ error: 'Erro ao obter vista pedagógica' });
   }
 };
+
 // Adicionar resposta e atualizar ranking
 const addAnswer = async (req, res) => {
   try {

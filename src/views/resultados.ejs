@@ -463,15 +463,10 @@
 
                                 <table class="table-responsive mb-4">
 
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Questões</th>
-                                            <th scope="col"></th>
-                                            <!-- looping para aparecer até o total de questões que a prova tem -->
-                                            <th scope="col">Q. acertos</th>
-                                        </tr>
+                                    <thead id="tabela-header">
+                                        
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tabela-body">
 
 
 
@@ -534,6 +529,54 @@
                 function mostrarResultadosAnteriores(id) {
                     // Esconde a primeira tabela
                     console.log(id);
+                    axios.get(`/vista_pedagogica/${id}`)
+                        .then((response) => {
+                            const vista_pedagogica = response.data;
+                            console.log(vista_pedagogica);
+
+                            const tabelaHeader = document.getElementById('tabela-header');
+                            // <th scope="col">Questões</th>
+                            // <th scope="col"></th>
+                            // <!-- looping para aparecer até o total de questões que a prova tem -->
+                            // <th scope="col">Q. acertos</th>
+                            const questoesH = document.createElement('th');
+                            questoesH.textContent = 'Questões:';
+                            tabelaHeader.appendChild(questoesH);
+                            const tabelaBody = document.getElementById('tabela-body');
+
+                            vista_pedagogica.questoes.map((q, index) => {
+                                const th = document.createElement('th');
+                                th.textContent = index + 1;
+                                tabelaHeader.appendChild(th);    
+                            })
+
+                            const acertosH = document.createElement('th');
+                            acertosH.textContent = 'Q. acertos';
+                            tabelaHeader.appendChild(acertosH);
+
+                            vista_pedagogica.alunos.map((aluno) => {
+                                console.log(aluno);
+                                const tr = document.createElement('tr');
+                                const td = document.createElement('td');
+                                td.textContent = aluno.nome;
+                                tr.appendChild(td);
+
+                                aluno.respostas.map((r) => {
+                                    const acertosTd = document.createElement('td');
+                                    // se a variavel acertou for true, colore verde o td
+                                    acertosTd.style.backgroundColor = r.acertou ? 'green' : 'red';
+                                    acertosTd.textContent = r.itemMarcado;
+                                    tr.appendChild(acertosTd);
+                                })
+
+                                const acertosTd = document.createElement('td');
+                                acertosTd.textContent = aluno.totalAcertos;
+                                tr.appendChild(acertosTd);
+                                tabelaBody.appendChild(tr);
+                            })
+                        }).catch((e) => {
+                            console.log(e);
+                        })
                     document.getElementById('tabela-vista-pedagogica').style.display = 'none';
                     // Mostra a segunda tabela
                     document.getElementById('tabela-resultados-anteriores').style.display = 'block';
