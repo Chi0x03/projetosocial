@@ -86,7 +86,7 @@ app.get('/ajuda.html', isAuthenticated, (req, res) => {
   res.render('ajuda');
 });
 
-app.get('/resultados.html' /*, isAuthenticated*/, (req, res) => {
+app.get('/resultados.html', isAuthenticated, (req, res) => {
   res.render('resultados');
 });
 

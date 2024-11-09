@@ -493,11 +493,10 @@
                                     <tbody>
 
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                                </th>
+                                            <td id="melhorAproveitamento"></td>
+                                            <td id="maiorDificuldade"></td>
+                                            <td id="ficarDeOlho"></td>
+                                            <td id="intermediario"></td>
                                         </tr>
 
 
@@ -527,6 +526,18 @@
             <script>
 
                 function mostrarResultadosAnteriores(id) {
+                    // função para limpar as tabelas para que seja possível ser apresentada outros resultados
+
+                    const tabela = document.getElementById('tabela-header');
+                    while (tabela.firstChild) {
+                        tabela.removeChild(tabela.firstChild);
+                    }
+
+                    const tabela2 = document.getElementById('tabela-body');
+                    while (tabela2.firstChild) {
+                        tabela2.removeChild(tabela2.firstChild);
+                    }
+
                     // Esconde a primeira tabela
                     console.log(id);
                     axios.get(`/vista_pedagogica/${id}`)
@@ -574,6 +585,19 @@
                                 tr.appendChild(acertosTd);
                                 tabelaBody.appendChild(tr);
                             })
+
+                            const melhorAproveitamento = document.getElementById('melhorAproveitamento');
+                            melhorAproveitamento.textContent = `${vista_pedagogica.avaliacaoPorDescritor.melhorAproveitamento.codigo} - ${vista_pedagogica.avaliacaoPorDescritor.melhorAproveitamento.descricao}`;
+
+                            const maiorDificuldade = document.getElementById('maiorDificuldade');
+                            maiorDificuldade.textContent = `${vista_pedagogica.avaliacaoPorDescritor.maiorDificuldade.codigo} - ${vista_pedagogica.avaliacaoPorDescritor.maiorDificuldade.descricao}`;
+
+                            const ficarDeOlho = document.getElementById('ficarDeOlho');
+                            ficarDeOlho.textContent = `${vista_pedagogica.avaliacaoPorDescritor.paraFicarDeOlho.codigo} - ${vista_pedagogica.avaliacaoPorDescritor.paraFicarDeOlho.descricao}`;
+
+                            const intermediario = document.getElementById('intermediario');
+                            intermediario.textContent = `${vista_pedagogica.avaliacaoPorDescritor.intermediario.codigo} - ${vista_pedagogica.avaliacaoPorDescritor.intermediario.descricao}`;
+
                         }).catch((e) => {
                             console.log(e);
                         })

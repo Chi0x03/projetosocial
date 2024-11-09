@@ -8,12 +8,17 @@ const getPedagogicView = async (req, res) => {
     const respostasDeProvas = await prisma.respostasDeProvas.findMany({
       where: { provaId: parseInt(req.params.id) },
       include: {
-        questao: true,
+        questao: {
+          include: {
+            descritor: true,
+          },
+        },
       },
     });
 
     const questoesSet = new Set();
     const alunosMap = new Map();
+    const descritoresStats = new Map();
 
     // Função de hash para gerar um valor único
     function hash(str) {
@@ -24,48 +29,116 @@ const getPedagogicView = async (req, res) => {
       return hash.toString(16);
     }
 
-    // console.log(respostasDeProvas);
-
     respostasDeProvas.forEach((resposta) => {
       questoesSet.add(resposta.questao.id);
-
       const alunoHash = hash(resposta.aluno);
 
+      // Inicializa os dados do aluno se ainda não estiverem no Map
       if (!alunosMap.has(alunoHash)) {
         alunosMap.set(alunoHash, {
           nome: resposta.aluno,
           totalAcertos: 0,
           respostas: [],
+          questoesRespondidas: new Set(),  // Set para evitar questões duplicadas
         });
       }
 
       const alunoData = alunosMap.get(alunoHash);
-      const respostaExistente = alunoData.respostas.find((r) => r.questao === resposta.questao.id);
-      if (!respostaExistente) {
+
+      // Verifica se a questão já foi respondida pelo aluno
+      if (!alunoData.questoesRespondidas.has(resposta.questao.id)) {
+        alunoData.questoesRespondidas.add(resposta.questao.id);
+
+        // Adiciona a resposta do aluno
         alunoData.respostas.push({
           questao: resposta.questao.id,
           itemMarcado: resposta.itemMarcado,
           acertou: resposta.acertou,
         });
+
+        // Incrementa o total de acertos, se aplicável
         if (resposta.acertou) {
           alunoData.totalAcertos++;
         }
       }
 
+      // Processa os dados dos descritores
+      if (resposta.questao.descritor) {
+        const descritorId = resposta.questao.descritor.id;
+        if (!descritoresStats.has(descritorId)) {
+          descritoresStats.set(descritorId, {
+            codigo: resposta.questao.descritor.codigo,
+            descricao: resposta.questao.descritor.descricao,
+            totalQuestoes: 0,
+            totalAcertos: 0,
+          });
+        }
+
+        const descritorData = descritoresStats.get(descritorId);
+        descritorData.totalQuestoes++;
+        if (resposta.acertou) {
+          descritorData.totalAcertos++;
+        }
+      }
     });
 
     const totalQuestoes = questoesSet.size;
-    const alunos = Array.from(alunosMap.values()).map((alunoData) => {
-      alunoData.percentualAcertos = `${((alunoData.totalAcertos / totalQuestoes) * 100).toFixed(2)}%`;
-      return alunoData;
+
+    // Processa os dados dos alunos e calcula o percentual de acertos
+    const alunos = Array.from(alunosMap.values()).map((alunoData) => ({
+      nome: alunoData.nome,
+      totalAcertos: alunoData.totalAcertos,
+      percentualAcertos: `${((alunoData.totalAcertos / totalQuestoes) * 100).toFixed(2)}%`,
+      respostas: alunoData.respostas,
+    }));
+
+    // Avaliação dos descritores com base nos dados coletados em um único loop
+    let melhorAproveitamento = null;
+    let maiorDificuldade = null;
+    let paraFicarDeOlho = null;
+    let intermediario = null;
+
+    descritoresStats.forEach((descritor) => {
+      const aproveitamento = descritor.totalAcertos / descritor.totalQuestoes;
+
+      if (!melhorAproveitamento || aproveitamento > melhorAproveitamento.aproveitamento) {
+        melhorAproveitamento = { ...descritor, aproveitamento };
+      }
+
+      if (!maiorDificuldade || aproveitamento < maiorDificuldade.aproveitamento) {
+        maiorDificuldade = { ...descritor, aproveitamento };
+      }
+
+      if (aproveitamento < 0.5) {
+        paraFicarDeOlho = paraFicarDeOlho || { ...descritor, aproveitamento };
+      } else if (aproveitamento >= 0.5 && aproveitamento < 0.7) {
+        intermediario = intermediario || { ...descritor, aproveitamento };
+      }
     });
 
-    res.json({ questoes: Array.from(questoesSet), alunos });
+    const avaliacaoPorDescritor = {
+      melhorAproveitamento: melhorAproveitamento
+        ? { codigo: melhorAproveitamento.codigo, descricao: melhorAproveitamento.descricao }
+        : null,
+      maiorDificuldade: maiorDificuldade
+        ? { codigo: maiorDificuldade.codigo, descricao: maiorDificuldade.descricao }
+        : null,
+      paraFicarDeOlho: paraFicarDeOlho
+        ? { codigo: paraFicarDeOlho.codigo, descricao: paraFicarDeOlho.descricao }
+        : null,
+      intermediario: intermediario
+        ? { codigo: intermediario.codigo, descricao: intermediario.descricao }
+        : null,
+    };
+
+    res.json({ questoes: Array.from(questoesSet), alunos, avaliacaoPorDescritor });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao obter vista pedagógica' });
   }
 };
+
+
 
 // Adicionar resposta e atualizar ranking
 const addAnswer = async (req, res) => {
