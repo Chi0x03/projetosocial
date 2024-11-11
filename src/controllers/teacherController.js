@@ -4,15 +4,13 @@ const prisma = new PrismaClient();
 const getTeacher = async (req, res) => {
   const teacherId = req.session.professorId;
   try {
-    const professor = await prisma.professor.findUnique({
-      where: { id: teacherId },
-      select: {
-        nome: true,
-        email: true,
-        instituicao: true,
-        disciplina: true
-      }
+    let professor = await prisma.professor.findUnique({
+      where: { id: teacherId }
     });
+
+    professor.senha = undefined
+    
+
     res.json(professor);
   } catch (error) {
     console.log(error);
