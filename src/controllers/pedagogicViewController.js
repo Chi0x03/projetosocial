@@ -1,7 +1,7 @@
 // src/controllers/pedagogicViewController.js
 
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'] });
 
 const getPedagogicView = async (req, res) => {
   try {
