@@ -67,11 +67,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/CadastroPG.html', (req, res) => {
-  res.render('CadastroPG');
+  res.render('CadastroPg');
 });
 
 app.get('/LoginPG.html', (req, res) => {
-  res.render('LoginPG');
+  res.render('LoginPg');
 });
 
 app.get('/perfil_prof.html', isAuthenticated , (req, res) => {
@@ -87,7 +87,7 @@ app.get('/pag_questao.html', (req, res) => {
 })
 
 app.get('/EntrarPG.html', (req, res) => {
-  res.render('EntrarPG');
+  res.render('EntrarPg');
 });
 
 app.get('/boa_sorte.html', (req, res) => {
