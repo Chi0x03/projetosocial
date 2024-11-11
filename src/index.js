@@ -4,6 +4,7 @@ const cors = require('cors');
 const http = require('http'); // Importa o módulo http para criar o servidor
 const socketIo = require('socket.io'); // Importa o Socket.IO
 const app = express();
+const path = require('path');
 
 // Configurações do servidor e do Socket.IO
 const server = http.createServer(app); // Cria o servidor HTTP
@@ -21,10 +22,10 @@ const pedagogicViewRoutes = require('./routes/pedagogicViewRoutes');
 const isAuthenticated = require('./middlewares/authMiddleware');
 
 app.use(express.json());
-app.use(express.static('./src/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
+app.set('views', path.join(__dirname, 'views'));
 
 // Configuração de sessão
 app.use(session({
