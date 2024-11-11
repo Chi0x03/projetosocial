@@ -5,6 +5,25 @@ const http = require('http'); // Importa o módulo http para criar o servidor
 const socketIo = require('socket.io'); // Importa o Socket.IO
 const app = express();
 const path = require('path');
+const fs = require('fs');
+
+function printDirectoryTree(dir, prefix = '') {
+  console.log(prefix + path.basename(dir));
+  const files = fs.readdirSync(dir);
+
+  files.forEach((file, index) => {
+      const filePath = path.join(dir, file);
+      const isLast = index === files.length - 1;
+      const newPrefix = prefix + (isLast ? '└── ' : '├── ');
+
+      if (fs.statSync(filePath).isDirectory()) {
+          printDirectoryTree(filePath, prefix + (isLast ? '    ' : '│   '));
+      } else {
+          console.log(newPrefix + file);
+      }
+  });
+}
+
 
 // Configurações do servidor e do Socket.IO
 const server = http.createServer(app); // Cria o servidor HTTP
@@ -198,4 +217,5 @@ io.on('connection', (socket) => {
 const port = 8080;
 server.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
+  printDirectoryTree(__dirname);
 });
