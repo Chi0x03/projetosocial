@@ -25,13 +25,13 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .questao {
             background-color: #10374a;
             padding: 20px 30px;
             border-radius: 25px;
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: justify;
             height: 400px;
             overflow-y: auto;
             opacity: 0.9;
@@ -192,6 +192,7 @@
             <div class="col-questao mb-4">
                 <div class="robopgq">
                     <!-- <img src="IMG/roboc.png" alt=""> -->
+                     <p>Questão: <span id="numQuestao">1</span></p>
                 </div>
                 <div class="questao" id="questao">
                     <p></p>
@@ -269,6 +270,7 @@
         let seconds = 0;
         let minutes = 0;
         let totalSeconds = 0;
+        let numQuestao = 0;
 
         // Carrega as respostas do localStorage ou inicializa como um array vazio
         let respostas = JSON.parse(localStorage.getItem('respostas')) || [];
@@ -325,6 +327,9 @@
         // Recebe a questão do professor e exibe
         socket.on('question', ({ question, provaId }) => {
             const questaoElement = document.getElementById('questao');
+            const numQuestaoElement = document.getElementById('numQuestao');
+            numQuestao++;
+            numQuestaoElement.textContent = numQuestao;
             questao = question;
             idProva = provaId;
             questaoElement.innerHTML = question.enunciado;
@@ -364,8 +369,12 @@
                 provaId: idProva
             };
 
-            respostas.push(resposta);
-            localStorage.setItem('respostas', JSON.stringify(respostas)); // Salva no localStorage
+            // só salvar se a questão não estiver salva
+            if (!respostas.some(resposta => resposta.questaoId === questao.id)) {
+                respostas.push(resposta);
+                localStorage.setItem('respostas', JSON.stringify(respostas)); // Salva no localStorage
+            }
+            // respostas.push(resposta);
 
             console.log(`Tempo gasto na questão ${questao.id}: ${tempoGasto} segundos`);
             console.log(respostas);
@@ -441,6 +450,8 @@
             } catch (error) {
                 console.error("Erro ao tentar enviar os dados:", error);
             }
+
+            window.location.href = "/RankPG.html?id=" + provaId;
         });
     </script>
 

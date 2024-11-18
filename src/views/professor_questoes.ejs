@@ -80,6 +80,24 @@
 
         }
 
+        .proxima-questao {
+            background-color: #e74c3c;
+            border-radius: 10px;
+            height: 150px;
+            position: relative;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .proxima-questao:hover {
+            background-color: #c0392b;
+            transition: background-color 0.3s ease;
+        }
+
         .count {
             position: absolute;
             top: -10px;
@@ -144,6 +162,25 @@
             align-items: center;
             display: flex;
         }
+
+        .botaoFoda {
+            background-color: #f3751e;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .botaoFoda:hover {
+            background-color: #1979aa;
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 
@@ -164,41 +201,47 @@
                 Quantidade de
                 respostas por alternativa <br> Questão
                 <span id="numQuestao">1</span>
+
+                
+                <div>
+                    <button class="botaoFoda" id="verEnunciado" onclick="verEnunciado()">Ver enunciado</button>
+                    <button class="botaoFoda" id="verEnunciado" onclick="verExplicacao()">Ver explicação</button>
+                </div>
             </h1>
 
             <div class="alternativas">
-                <div class="alternativa">
+                <div class="alternativa" id="alternativa-A">
                     <div class="letter" style="font-family: 'DoubleBassB';">
                         A
                     </div>
                     <div class="count" id="count-A">0</div>
                 </div>
-                <div class="alternativa">
+                <div class="alternativa" id="alternativa-B">
                     <div class="letter" style="font-family: 'DoubleBassB';">
                         B
                     </div>
                     <div class="count" id="count-B">0</div>
                 </div>
-                <div class="alternativa">
+                <div class="alternativa" id="alternativa-C">
                     <div class="letter" style="font-family: 'DoubleBassB';">
                         C
                     </div>
                     <div class="count" id="count-C">0</div>
                 </div>
-                <div class="alternativa">
+                <div class="alternativa" id="alternativa-D">
                     <div class="letter" style="font-family: 'DoubleBassB';">
                         D
                     </div>
                     <div class="count" id="count-D">0</div>
                 </div>
-                <div class="alternativa">
+                <div class="alternativa" id="alternativa-E">
                     <div class="letter" style="font-family: 'DoubleBassB';">
                         E
                     </div>
                     <div class="count" id="count-E">0</div>
                 </div>
                 <a id="proximaQuestao" style="text-decoration: none;">
-                    <div class="alternativa" style="background-color: #e74c3c; font-size: 40px;">
+                    <div class="proxima-questao">
                         <h5>Próxima questão</h5>
                     </div>
                 </a>
@@ -210,7 +253,7 @@
                 <h3>Status das Respostas</h3>
             </div>
             <div class="status-header" style="background-color: #e74c3c;">
-                <h3><span id="numAlunos"></span> Respostas restantes</h3>
+                <h3><span id="numAlunos"></span> Aluno(s)</h3>
             </div>
             <div class="status-list" id="status-list">
             </div>
@@ -265,6 +308,11 @@
             if (prova && prova.questoes && prova.questoes.length > 0) {
                 // socket.emit('primeira-questao', { roomId: sala, provaId: provaId, question: prova.questoes[0] });
                 socket.emit('join-quiz', { roomId: sala, provaId, nome, isProfessor: true, question: prova.questoes[0] });
+                // mudar a cor de fundo da alternativa correta da questão de indice 0 para verde usando `alternativa-${questao.alternativaCorreta}`
+                const alternativaCorreta = document.getElementById(`alternativa-${prova.questoes[0].respostaCorreta}`);
+                alternativaCorreta.style.backgroundColor = '#2ecc71';
+
+
                 console.log(prova)
             } else {
                 console.error('Prova ou questões não disponíveis');
@@ -286,12 +334,21 @@
 
     socket.on('alunos-count', ({ count }) => {
         document.getElementById('numAlunos').innerHTML = count - 1;
-        quantidadeAlunos = count;
+        quantidadeAlunos = count - 1;
     });
     let savedQuestionIndex = localStorage.getItem('questionIndex');
     if (savedQuestionIndex) {
         questionIndex = parseInt(savedQuestionIndex);  // Recupera e usa o índice salvo
         document.getElementById('numQuestao').innerText = questionIndex + 1;  // Atualiza o número da questão
+    }
+
+    // função para mostrar o enunciado da questão atual num alert
+    function verEnunciado() {
+        alert(prova.questoes[questionIndex].enunciado);
+    }
+
+    function verExplicacao() {
+        alert(prova.questoes[questionIndex].explicacao);
     }
 
     // Modificar o evento de "Próxima Questão" para salvar o índice
@@ -311,6 +368,15 @@
             }
             document.getElementById('numQuestao').innerHTML = questionIndex + 1;
             socket.emit('next-question', { roomId: sala, currentQuestion: prova.questoes[questionIndex] });
+
+            // reseta a cor de fundo das alternativas para o padrão da classe 'alternativa', que é a cor de fundo original #f3751e
+            const alternativas = document.querySelectorAll('.alternativa');
+            alternativas.forEach((alternativa) => {
+                alternativa.style.backgroundColor = '#f3751e';
+            });
+
+            const alternativaCorreta = document.getElementById(`alternativa-${prova.questoes[questionIndex].respostaCorreta}`);
+            alternativaCorreta.style.backgroundColor = '#2ecc71';
             console.log(prova.questoes[questionIndex]);
         } else {
             console.log('Não há mais questões.');
@@ -390,7 +456,7 @@
 
     socket.on('aluno-answered', ({ alunoId }) => {
         let item = document.getElementById(alunoId);
-        document.getElementById('numAlunos').innerHTML = parseInt(document.getElementById('numAlunos').innerHTML) - 1;
+        document.getElementById('numAlunos').innerHTML = quantidadeAlunos;
 
         if (item) {
             // Encontra a div de status e altera a imagem para o ícone de correto

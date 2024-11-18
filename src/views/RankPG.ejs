@@ -477,12 +477,13 @@
         axios.get('/vista_pedagogica/ranking/' + provaId)
             .then((response) => {
                 const dadosRanking = response.data;
+                console.log(dadosRanking);
 
                 // Referências ao pódio e à lista de classificação
                 const posicao1 = document.querySelector('.posicao1');
                 const posicao2 = document.querySelector('.posicao2');
                 const posicao3 = document.querySelector('.posicao3');
-                const rankingList = document.querySelector('.ranking-list'); // Adicione uma lista para o restante dos jogadores
+                const rankingList = document.querySelector('#ranking-list'); // Adicione uma lista para o restante dos jogadores
 
                 // Exibe os três primeiros no pódio
                 dadosRanking.forEach((dado, index) => {
@@ -502,7 +503,7 @@
                         // Adiciona os demais jogadores na lista
                         const li = document.createElement('li');
                         li.innerHTML = `
-                    <img src="${dado.img}" alt="${dado.nomeAluno}">
+                    <img src="IMG/avatar.png" alt="${dado.nomeAluno}">
                     <span>${dado.nomeAluno} - ${dado.totalAcertos}/${dado.totalQuestoes} 
                     <span class="tempo">${formatTime(dado.tempoDeResposta)}</span></span>
                 `;
