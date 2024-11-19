@@ -553,13 +553,7 @@
                                     // se a variavel acertou for true, colore verde o td
                                     acertosTd.style.backgroundColor = r.acertou ? 'green' : 'red';
                                     acertosTd.textContent = r.itemMarcado;
-                                    tr.appendChild(acertosTd);
-                                    // se o aluno não respondeu o restante das questões, preenche com - em um loop
-                                    for (let i = aluno.respostas.length; i < vista_pedagogica.questoes.length; i++) {
-                                        const acertosTd = document.createElement('td');
-                                        acertosTd.textContent = '-';
-                                        tr.appendChild(acertosTd);
-                                    }                                    
+                                    tr.appendChild(acertosTd);                          
                                 })
 
                                 const acertosTd = document.createElement('td');
