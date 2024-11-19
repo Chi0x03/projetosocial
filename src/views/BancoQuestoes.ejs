@@ -447,7 +447,7 @@
             <!-- Nome do Usuário -->
             <div class="user-name">
                 <img class="perfil_ft" src="" alt="" style="margin-left: 15px;">
-                <h2>user</h2>
+                <h2 id="nomeProfessor">user</h2>
             </div>
 
             <!-- Botões de Navegação -->
@@ -734,6 +734,17 @@
         if (!descritor) {
             window.location.href = 'MontarP2.html';
         }
+
+        axios.get('/professor')
+        .then((response) => {
+            const nomeNoPerfil = document.querySelector("#nomeProfessor");
+            nomeNoPerfil.innerHTML = response.data.nome;
+            console.log(response.data);
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+
 
         axios.get('/questoes/questao-by-descritor/' + descritor)
             .then(function (response) {
