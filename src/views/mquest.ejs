@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PublicClass - Tela de Perfil</title>
+    <!-- importar axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -168,9 +170,10 @@
 
         .tabela-container {
             width: 100%;
-            max-height: 200px;
+            max-height: 100%;
             overflow-y: auto;
-            scrollbar-width: none;
+            overflow-x: auto;
+            scrollbar-width: thin;
             background-color: #05476A;
             border-radius: 15px;
         }
@@ -545,7 +548,7 @@
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tabelatbody">
                                     <tr>
                                         <td class="icone" id="botao" onclick="(botao)">
                                             <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
@@ -554,7 +557,6 @@
                                         <td bgcolor="#055680">
                                             <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png"
                                                 alt="Ícone de Adicionar" width="24" height="24">
-
                                         </td>
                                         <td class="questao">
                                             <div class="questaoC">
@@ -644,73 +646,90 @@
             <h1 style="font-family: DoubleBass; color: #FFFFFF;" class="mt-4 mb-2 text-center">Adicione sua questão
                 aqui!</h1>
 
-            <form style="margin-left: 10%; margin-right: 10%; color: #FFFFFF;">
+            <form id="nova-questao" style="margin-left: 10%; margin-right: 10%; color: #FFFFFF;">
                 <div class="abas mb-3">
                     <label for="exampleInputEmail1" class="form-label">Enunciado:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="enunciado" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="enunciado">
 
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item A:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="alternativaA" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="alternativaA">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item B:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="alternativaB" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="alternativaB">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item C:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="alternativaC" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="alternativaC">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item D:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="alternativaD" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="alternativaD">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item E:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="alternativaE" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="alternativaE">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Item correto:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        id="respostaCerta">
+                    <!-- <input type="text" name="respostaCorreta" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        id="respostaCorreta"> -->
+                    <select class="form-control" aria-label="Default select example" name="respostaCorreta" id="respostaCorreta">
+                        <option value="null">Selecione a alternativa correta</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Explicação:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    <input type="text" name="explicacao" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                         id="explicacao">
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Descritor:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        id="descritorId ">
+                    <!-- <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        id="descritorId "> -->
+                    <!-- select que vai ser alimentando pelo js -->
+                    <select class="form-control" aria-label="Default select example" name="descritorId" id="descritorId">
+                        <option value="null">Selecione o Descritor</option>
+                    </select>
 
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Disciplina:</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        id="disciplina">
+                    <!-- <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        id="disciplina"> -->
+                    <select class="form-control" aria-label="Default select example" name="disciplina" id="descritorId">
+                        <option value="null">Selecione a Disciplina</option>
+                        <option value="Matemática">Matemática</option>
+                        <option value="Português">Português</option>
+                    </select>
 
                 </div>
 
@@ -755,35 +774,35 @@
         //     });
         // });
 
-        document.getElementById('adicionarQuestao').addEventListener('click', function () {
+        // document.getElementById('adicionarQuestao').addEventListener('click', function () {
 
-            const tabela2 = document.querySelector('.tabela2 tbody');
+        //     const tabela2 = document.querySelector('.tabela2 tbody');
 
-            const novaLinha = document.createElement('tr');
-
-
-            novaLinha.innerHTML = `
-
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
-                    <td class="icone">
-                                    <button style="background: none; border: none;" id="confirmar"><img
-                                            src="IMG/correto_rank.png" alt="Ícone salvar"></button>
-                                </td>
-                `;
+        //     const novaLinha = document.createElement('tr');
 
 
-            tabela2.appendChild(novaLinha);
+        //     novaLinha.innerHTML = `
 
-        });
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td><input type="text" style="background: none; border: none; color: #FFFFFF; width: 100%;"></td>
+        //             <td class="icone">
+        //                             <button style="background: none; border: none;" id="confirmar"><img
+        //                                     src="IMG/correto_rank.png" alt="Ícone salvar"></button>
+        //                         </td>
+        //         `;
+
+
+        //     tabela2.appendChild(novaLinha);
+
+        // });
 
 
     </script>
@@ -812,7 +831,160 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
+    <script>
+        function deletarQuestao(id) {
+            axios.delete(`/questoes/${id}`)
+                .then(response => {
+                    console.log(response.data);
+                    // atualizar a tabela com as questões atualizadas
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
 
+        // adicionar questão ao localStorage e evitar adicionar ela duas vezes
+        function adicionarQuestao(questao) {
+            const questoes = JSON.parse(localStorage.getItem('questoes')) || [];
+            if (!questoes.includes(questao)) {
+                questoes.push(questao);
+                localStorage.setItem('questoes', JSON.stringify(questoes));
+            } else {
+                alert('Questão adicionada anteriormente!');
+            }
+        }
+    </script>
+
+    <script>
+        axios.get('/questoes/questao-by-professor')
+    .then(response => {
+        console.log(response.data);
+        const questoes = response.data;
+
+        // Seleciona o corpo da tabela
+        const tbody = document.querySelector('#tabelatbody');
+
+        questoes.forEach(questao => {
+            // Cria uma nova linha da tabela
+            const tr = document.createElement('tr');
+
+            // Botão de deletar
+            const tdDelete = document.createElement('td');
+            tdDelete.classList.add('icone');
+            tdDelete.id = 'botao';
+            tdDelete.onclick = () => deletarQuestao(questao.id);
+            const imgDelete = document.createElement('img');
+            imgDelete.src = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png";
+            imgDelete.alt = "Ícone de Lixeira";
+            tdDelete.appendChild(imgDelete);
+
+            // Botão de adicionar
+            const tdAdd = document.createElement('td');
+            tdAdd.style.backgroundColor = "#055680";
+            tdAdd.onclick = () => adicionarQuestao(questao.id); // Corrigido o erro que usava JSON.parse
+            const imgAdd = document.createElement('img');
+            imgAdd.src = "https://cdn-icons-png.flaticon.com/512/1828/1828817.png";
+            imgAdd.alt = "Ícone de Adicionar";
+            imgAdd.width = 24;
+            imgAdd.height = 24;
+            tdAdd.appendChild(imgAdd);
+
+            // Colunas dos dados da questão
+            const tdEnunciado = document.createElement('td');
+            tdEnunciado.textContent = questao.enunciado;
+
+            const tdAlternativaA = document.createElement('td');
+            tdAlternativaA.textContent = questao.alternativaA;
+
+            const tdAlternativaB = document.createElement('td');
+            tdAlternativaB.textContent = questao.alternativaB;
+
+            const tdAlternativaC = document.createElement('td');
+            tdAlternativaC.textContent = questao.alternativaC;
+
+            const tdAlternativaD = document.createElement('td');
+            tdAlternativaD.textContent = questao.alternativaD;
+
+            const tdAlternativaE = document.createElement('td');
+            tdAlternativaE.textContent = questao.alternativaE;
+
+            const tdRespostaCorreta = document.createElement('td');
+            tdRespostaCorreta.textContent = questao.respostaCorreta;
+
+            const tdExplicacao = document.createElement('td');
+            tdExplicacao.textContent = questao.explicacao;
+
+            const tdDescritor = document.createElement('td');
+            tdDescritor.textContent = `${questao.descritor.codigo} - ${questao.descritor.descricao}`;
+
+            const tdDisciplina = document.createElement('td');
+            tdDisciplina.textContent = questao.disciplina;
+
+            // Adiciona as células à linha
+            tr.appendChild(tdDelete);
+            tr.appendChild(tdAdd);
+            tr.appendChild(tdEnunciado);
+            tr.appendChild(tdAlternativaA);
+            tr.appendChild(tdAlternativaB);
+            tr.appendChild(tdAlternativaC);
+            tr.appendChild(tdAlternativaD);
+            tr.appendChild(tdAlternativaE);
+            tr.appendChild(tdRespostaCorreta);
+            tr.appendChild(tdExplicacao);
+            tr.appendChild(tdDescritor);
+            tr.appendChild(tdDisciplina);
+
+            // Adiciona a linha à tabela
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+
+        axios.get('/descritores')
+            .then(response => {
+                console.log(response.data);
+                // alimentar o select 'descritorId' com os descritores no formato 'codigo - descricao'
+                const select = document.getElementById('descritorId');
+                response.data.forEach(descritor => {
+                    const option = document.createElement('option');
+                    option.value = descritor.id;
+                    option.textContent = `${descritor.codigo} - ${descritor.descricao}`;
+                    select.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        const form = document.querySelector('#nova-questao');
+
+        // Adiciona um evento de envio ao formulário
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Previne o comportamento padrão de recarregar a página
+
+            // Cria um objeto com os dados do formulário
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Envia os dados para o servidor
+            axios.post('/questoes', data)
+                .then(function (response) {
+                    console.log(response.data);
+                    // Limpa o formulário
+                    form.reset();
+                    fecharModal();
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.error(error);
+                })
+        })
+    </script>
 
 
 </body>

@@ -126,6 +126,10 @@ app.get('/MontarP2.html', isAuthenticated, (req, res) => {
   res.render('MontarP2');
 });
 
+app.get('/mquest.html', isAuthenticated, (req, res) => {
+  res.render('mquest');
+})
+
 app.get('/RankPG.html', (req, res) => {
   res.render('RankPG');
 })
@@ -217,5 +221,5 @@ io.on('connection', (socket) => {
 const port = 8080;
 server.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
-  printDirectoryTree(__dirname);
+  // printDirectoryTree(__dirname);
 });

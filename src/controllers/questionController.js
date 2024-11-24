@@ -9,13 +9,36 @@ const deleteQuestion = async (req, res) => {
     const deletedQuestion = await prisma.questao.delete({
       where: {
         id: questionId,
-        // professorId
+        professorId
       }
     })
-    res.json(deleteQuestion)
+    res.json(deletedQuestion)
   } catch (error) {
     console.log(error)
-    res.status(500).json({ error: 'Erro ao deletars questão' });
+    res.status(500).json({ error: 'Erro ao deletar questão' });
+  }
+}
+
+const getQuestionsByProfessor = async (req, res) => {
+  const professorId = req.session.professorId
+  try {
+    const questions = await prisma.questao.findMany({
+      where: {
+        professorId
+      },
+      include: {
+        descritor: {
+          select: {
+            codigo: true,
+            descricao: true
+          }
+        }
+      }
+    })
+    res.json(questions)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Erro ao buscar questões do professor' });
   }
 }
 
@@ -147,5 +170,6 @@ module.exports = {
   getQuestion,
   editQuestion,
   deleteQuestion,
-  getQuestionsByDescritor
+  getQuestionsByDescritor,
+  getQuestionsByProfessor
 };
