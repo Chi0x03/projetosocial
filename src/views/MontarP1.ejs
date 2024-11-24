@@ -262,8 +262,23 @@
 
         .linha-inferior {
             border-bottom: 2px solid white;
-            margin-top: 30%;
+            margin-top: 5%;
         }
+
+        .botaoB {
+            background-color: #FF9800;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 40px;
+           
+            margin: 0 60px;
+            margin-top: 55px; 
+            font-size: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
     </style>
 </head>
 
@@ -310,31 +325,41 @@
                         <button class="botao" onclick="redirecionamento('Matemática')">Matemática</button>
                         <button class="botao" onclick="redirecionamento('Português')">Português</button>
                         <div class="linha-inferior">
-                            
+
                         </div>
 
-                        <button class="botao" onclick="minhasProvas()">Minhas Provas</button>
-                    </div>
+                        <!-- <button class="botao"
+                                     style="margin-top: 2%; display: flex; justify-content: center; align-items: center;"
+                                    onclick="minhasProvas()">Minhas Questões</button> -->
 
-                    
+                        <div
+                            style="display: flex; margin-top: -2%; width: auto;">
+                            <button class="botaoB" onclick="minhasProvas()" style="width: 320px; height: 100px;">Minhas Provas </button>
+                            <button class="botaoB" onclick="window.location.href='mquest.html'" style="width: 320px;">Minhas Questões </button>
+                            
+
+                        
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        function minhasProvas() {
-            window.location.href = 'MinhasProvas.html';
-        }
-    </script>
+        <script>
+            function minhasProvas() {
+                window.location.href = 'MinhasProvas.html';
+            }
+        </script>
 
-    <!-- JavaScript e Bootstrap -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cl
+        <!-- JavaScript e Bootstrap -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cl
 oudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
 
 
 
