@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
 
 const getTeacher = async (req, res) => {
   const teacherId = req.session.professorId;
@@ -22,6 +23,10 @@ const getTeacher = async (req, res) => {
 const updateTeacher = async (req, res) => {;
   const professorId = req.session.professorId
   console.log(req.body)
+
+  if (req.body.senha) {
+    req.body.senha = await bcrypt.hash(req.body.senha, 10);
+  }
 
   try {
     let professorEditado = await prisma.professor.update({

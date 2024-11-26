@@ -549,7 +549,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tabelatbody">
-                                    <tr>
+                                    <!-- <tr>
                                         <td class="icone" id="botao" onclick="(botao)">
                                             <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
                                                 alt="Ícone de Lixeira">
@@ -599,7 +599,7 @@
                                         <td class="questao">
 
                                         </td>
-                                    </tr>
+                                    </tr> -->
 
 
                                 </tbody>
@@ -892,6 +892,7 @@
 
             // Colunas dos dados da questão
             const tdEnunciado = document.createElement('td');
+            tdEnunciado.style.textAlign = "justify"
             tdEnunciado.textContent = questao.enunciado;
 
             const tdAlternativaA = document.createElement('td');
