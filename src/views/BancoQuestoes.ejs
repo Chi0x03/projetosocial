@@ -777,6 +777,14 @@
                         botao.style.backgroundColor = 'green';
                     })
 
+                    // se a questão já estiver no localstorage mudar o botão
+                    const questoes = JSON.parse(localStorage.getItem('questoes') || '[]');
+                    if (questoes.some(q => q.id === questao.id)) {
+                        botao.textContent = 'Questão adicionada';
+                        botao.disabled = true;
+                        botao.style.backgroundColor = 'green';
+                    }
+
 
 
                     tdNumero.textContent = index + 1;
