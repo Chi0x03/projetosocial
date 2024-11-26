@@ -343,7 +343,7 @@
                     </div>
 
                     <div class="form-container">
-                        <form id="formUpdate">
+                        <form id="formUpdate" autocomplete="off">
 
                             <div class="row align-items-center mb-4">
                                 <label for="nome" class="ml-4">Nome:</label>
@@ -351,7 +351,7 @@
 
                                     <img class="perfil_ft mr-2" src="" alt="" style="width: 40px; height: 40px;"
                                         onclick="openModal()">
-                                    <input type="text" class="form-control" id="nomePerfil" value="">
+                                    <input type="text" class="form-control" name="nome" id="nomePerfil" value="">
                                     <button type="submit" class="btn btn-save">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
@@ -389,12 +389,12 @@
                             <div class="row">
                                 <div class="form-group col-12 col-sm-12 col-md-6">
                                     <label for="email">Email:</label>
-                                    <input type="email" class="form-control w-100" id="email">
+                                    <input type="email" class="form-control w-100" name="email" id="email">
                                 </div>
                                 <div class="form-group col-12 col-sm-12 col-md-6">
                                     <label for="senha">Senha:</label>
                                     <div class="input-group d-flex align-items-center w-100">
-                                        <input type="password" class="form-control" id="senha" value=""
+                                        <input type="password" class="form-control" name="senha" id="senha" value=""
                                             style="border-radius: 25px;">
                                         <span class="input-group-text" id="togglePassword"
                                             style="text-decoration: none;">
@@ -528,13 +528,13 @@
                 const disciplina = document.querySelector("#disciplina");
                 const instituicao = document.querySelector("#instituicao");
                 const email = document.querySelector("#email");
-                const senha = document.querySelector("#senha");
+                // const senha = document.querySelector("#senha");
 
                 // Campos de texto
                 nome.innerHTML = response.data.nome;
                 nomeNoPerfil.value = response.data.nome;
                 email.value = response.data.email;
-                senha.value = response.data.senha;
+                // senha.value = response.data.senha;
 
                 // Campos de select
                 disciplina.value = response.data.disciplina;

@@ -473,7 +473,7 @@
             <!-- Nome do Usuário -->
             <div class="user-name">
                 <img class="perfil_ft" src="" alt="" style="margin-left: 15px;">
-                <h2>user</h2>
+                <h2 id="nomeProfessor">user</h2>
 
 
             </div>
@@ -984,6 +984,33 @@
                     console.error(error);
                 })
         })
+    </script>
+
+    <script>
+        axios.get('/professor')
+            .then((response) => {
+                const nome = document.querySelector("#nomeProfessor");
+                const nomeNoPerfil = document.querySelector("#nomePerfil");
+                const disciplina = document.querySelector("#disciplina");
+                const instituicao = document.querySelector("#instituicao");
+                const email = document.querySelector("#email");
+                const senha = document.querySelector("#senha");
+
+                // Campos de texto
+                nome.innerHTML = response.data.nome;
+                nomeNoPerfil.value = response.data.nome;
+                email.value = response.data.email;
+                senha.value = response.data.senha;
+
+                // Campos de select
+                disciplina.value = response.data.disciplina;
+                instituicao.value = response.data.instituicao;
+
+                console.log(response.data);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     </script>
 
 
