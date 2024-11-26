@@ -30,6 +30,9 @@ const getDescritorByDisciplina = async (req, res) => {
     const descritores = await prisma.descritor.findMany({
       where: {
         disciplina: disciplinaString
+      },
+      orderBy: {
+        codigo: 'asc'
       }
     })
     return res.json(descritores)
