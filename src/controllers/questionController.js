@@ -86,6 +86,7 @@ const getQuestionsByDescritor = async (req, res) => {
     const questoes = await prisma.questao.findMany({
       where: {
         descritorId,
+        publica: true
       },
     });
 
