@@ -384,7 +384,9 @@
             socket.emit('finish-quiz', { roomId: sala, provaId });
             questionIndex = 0;
             localStorage.setItem('questionIndex', questionIndex);
-            window.location.href = '/RankPG.html?id=' + provaId;
+            setTimeout(() => {
+                window.location.href = '/RankPG.html?id=' + provaId;  
+            }, 3000)
         }
 
         // loop para alterar a imagem de todos os status para interrogação
