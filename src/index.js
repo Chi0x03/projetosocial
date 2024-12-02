@@ -38,7 +38,7 @@ const authRoutes = require('./routes/authRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const pedagogicViewRoutes = require('./routes/pedagogicViewRoutes');
 
-const isAuthenticated = require('./middlewares/authMiddleware');
+const { preventGoToIndex, isAuthenticated } = require('./middlewares/authMiddleware');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -62,15 +62,15 @@ app.use('/professor', teacherRoutes);
 app.use('/auth', authRoutes);
 app.use('/vista_pedagogica', pedagogicViewRoutes);
 
-app.get('/', (req, res) => {
+app.get('/', preventGoToIndex, (req, res) => {
   res.render('index');
 });
 
-app.get('/CadastroPG.html', (req, res) => {
+app.get('/CadastroPG.html', preventGoToIndex, (req, res) => {
   res.render('CadastroPg');
 });
 
-app.get('/LoginPG.html', (req, res) => {
+app.get('/LoginPG.html', preventGoToIndex, (req, res) => {
   res.render('LoginPg');
 });
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const questionController = require('../controllers/questionController');
-const isAuthenticated = require('../middlewares/authMiddleware');
+const { isAuthenticated } = require('../middlewares/authMiddleware');
 
 router.post('/', isAuthenticated, questionController.createQuestion);
 router.post('/:id', /*isAuthenticated,*/ questionController.editQuestion);

@@ -6,4 +6,11 @@ function isAuthenticated(req, res, next) {
   res.redirect('/LoginPG.html')
 }
 
-module.exports = isAuthenticated;
+function preventGoToIndex(req, res, next) {
+  if (req.session.professorId) {
+    return res.redirect('/perfil_prof.html');
+  }
+  next();
+}
+
+module.exports = {isAuthenticated, preventGoToIndex};
