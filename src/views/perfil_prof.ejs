@@ -49,48 +49,10 @@
 
         }
 
-        /* .nav-buttons {
-            position: fixed;
-            top: 0;
-            left: 0px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background-color: transparent;
-            gap: 10px;
-        }
-
-        .nav-buttons .btn {
-            font-size: 1.2rem;
-            color: white;
-            font-weight: bold;
-            background-color: #ff9600;
-            border: none;
-            border-radius: 0 50px 50px 0;
-            padding: 10px 20px;
-            width: 200px;
-            text-align: left;
-            transition: all 0.3s ease;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: 0;
-
-        }
-
-        .nav-buttons .btn:hover {
-            transform: scale(1.05);
-            background-color: #ffd27f;
-            color: #1f496e;
-        } */
-
         .nav-buttons {
             position: fixed;
             top: 0;
             left: 0px;
-            /* Metade da largura do botão para que só metade apareça */
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -107,10 +69,8 @@
             color: white;
             font-weight: bold;
             background-color: #ff9600;
-            /* Cor laranja dos botões */
             border: none;
             border-top-right-radius: 50px;
-            /* Bordas arredondadas */
             border-bottom-right-radius: 50px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
@@ -131,35 +91,21 @@
 
         .nav-buttons .btn:hover {
             background-color: #ffd27f;
-            /* Laranja claro ao passar o mouse */
             color: #1f496e;
             left: 0;
             transform: scale(1.05);
-            /* Ao passar o mouse, o botão aparece por completo */
         }
 
-
-
-
-        /* .nav-buttons .btn:hover {
-            transform: scale(1.05);
-        } */
-
-
-        /* Espaço do conteúdo principal */
         .main-content {
             margin-left: 100px;
-            /* Espaço para acomodar a parte visível dos botões */
             padding: 30px;
             text-align: right;
-            /* Alinha o texto à direita */
         }
 
         .main-content h1 {
             font-size: 120px;
             font-weight: bold;
             color: #ffffff;
-            /* Cor branca para o título */
             margin-bottom: 20px;
             text-align: center;
 
@@ -167,7 +113,6 @@
 
         .form-container {
             background-color: #055680;
-            /* Azul para o formulário */
             padding: 20px;
             border-radius: 25px;
             width: 900px;
@@ -175,7 +120,6 @@
             margin-left: auto;
             margin-left: auto;
             margin-right: auto;
-            /* Alinha o formulário ao centro */
             text-align: left;
             align-items: center;
         }
@@ -187,16 +131,11 @@
 
         .form-container .form-control {
             background-color: #d9e6f2;
-            /* Fundo claro para inputs */
-
-
-
             border-radius: 25px;
         }
 
         .btn-save {
             background-color: #ff4040;
-            /* Vermelho para o botão Salvar */
             color: white;
             width: 50px;
             border-radius: 25px;
@@ -212,7 +151,6 @@
             border: none;
         }
 
-        /* Responsividade */
         @media (max-width: 768px) {
             .nav-buttons {
                 position: relative;
@@ -240,7 +178,6 @@
             display: flex;
             align-items: center;
             border-top-right-radius: 50px;
-            /* Bordas arredondadas */
             border-bottom-right-radius: 50px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
@@ -315,24 +252,21 @@
 
     <div class="container-fluid p-0">
         <div class="row no-gutters">
-            <!-- Nome do Usuário -->
             <div class="user-name">
-                <img class="perfil_ft" src="" alt="" style="margin-left: 15px;">
                 <h2 id="nomeProfessor">user</h2>
             </div>
 
             <!-- Botões de Navegação -->
             <div class="col-2 nav-buttons mt-4">
-                <button class="btn" style="width: 250px;"><i class="fas fa-user"></i>Meu perfil</button>
-                <button class="btn" onclick="window.location.href='MontarP1.html'"><i class="fas fa-edit"></i>Montar prova</button>
-                <!-- <button class="btn" onclick="window.location.href='MontarP2.html'"><i class="fas fa-edit"></i>Montar prova</button> -->
-                <button class="btn" onclick="window.location.href='resultados.html'"><i class="fas fa-chart-bar"></i>Resultados</button>
-                <button class="btn" onclick="window.location.href='ajuda.html'"><i class="fas fa-question-circle"></i>Ajuda</button>
+                <button class="btn" style="width: 250px;"><i class="fas fa-user"></i> Meu perfil</button>
+                <button class="btn" onclick="window.location.href='MontarP1.html'"><i class="fas fa-edit"></i> Montar prova</button>
+                <button class="btn" onclick="window.location.href='resultados.html'"><i class="fas fa-chart-bar"></i> Resultados</button>
+                <button class="btn" onclick="window.location.href='ajuda.html'"><i class="fas fa-question-circle"></i> Ajuda</button>
+                <button class="btn" type="button" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
+            
 
 
-
-            <!-- Conteúdo Principal -->
             <div class="col main-content">
                 <div class="container mt-5 mb-2">
                     <div class="row">
@@ -349,16 +283,10 @@
                                 <label for="nome" class="ml-4">Nome:</label>
                                 <div class="form-group d-flex align-items-center">
 
-                                    <img class="perfil_ft mr-2" src="" alt="" style="width: 40px; height: 40px;"
-                                        onclick="openModal()">
+                                    <!-- <img class="perfil_ft mr-2" src="" alt="" style="width: 40px; height: 40px;"
+                                        onclick="openModal()"> -->
                                     <input type="text" class="form-control" name="nome" id="nomePerfil" value="">
-                                    <button type="submit" class="btn btn-save">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
-                                        </svg>
-                                    </button>
+                                    
                                 </div>
                             </div>
 
@@ -411,16 +339,14 @@
                             </div>
                         </form>
 
-                        <div>
+                        <!-- <div>
                             <button type="button" id="sair" class="btn btn-danger mt-4 float-end">Sair da Conta</button>
-                        </div>
+                        </div> -->
 
-                        <!-- Modal para seleção de avatar -->
                         <div id="myModal" class="modal">
                             <div class="modal-content">
-                                <span class="close" onclick="closeModal()">&times;</span>
-                                <!-- Botão de fechar o modal -->
-                                <h2>Selecione um Avatar</h2> <!-- Título do modal -->
+                                <span class="close" onclick="closeModal()">&times;</spa
+                                <h2>Selecione um Avatar</h2> 
                                 <div class="image-options">
                                     <img src="IMG/01.jpg" onclick="selectImage(this)"> <!-- Avatar 1 -->
                                     <img src="IMG/02.jpg" onclick="selectImage(this)"> <!-- Avatar 2 -->
@@ -549,6 +475,8 @@
 
 
     </script>
+
+    
 
 
 
