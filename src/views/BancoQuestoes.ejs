@@ -461,6 +461,7 @@
                         class="fas fa-chart-bar"></i>Resultados</button>
                 <button class="btn" onclick="window.location.href='ajuda.html'"><i
                         class="fas fa-question-circle"></i>Ajuda</button>
+                <button class="btn" type="button" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
 
 
@@ -508,84 +509,10 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tabela-questoes">
-                                    <!-- Exemplo de linha de dados -->
-                                    <!-- <tr>
-                                        <td class="icone">
-                                            <button class="ver-btn">Adicionar Questão na minha Prova</button>
-                                        </td>
-
-                                        <td class="questao">
-                                            <div class="questaoC">
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                                AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td class="icone">
-                                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
-                                                alt="Ícone de Lixeira">
-                                        </td>
-                                        <td class="questao">
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td class="icone">
-                                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
-                                                alt="Ícone de Lixeira">
-                                        </td>
-                                        <td class="questao">
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td class="icone">
-                                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
-                                                alt="Ícone de Lixeira">
-                                        </td>
-                                        <td class="questao">
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA<br>
-                                            AQUI TERÁ UMA QUESTÃO DE ALGUMA DISCIPLINA
-                                        </td>
-
-                                    </tr>
-                                    Mais linhas serão adicionadas dinamicamente -->
                                 </tbody>
                             </table>
                         </div>
-                        <!-- <div style="position: fixed; top: 86%; left: 35%;">
-                            
-                        </div> -->
-
                     </div>
-                    <!-- <div style="position: fixed; top: 86%; left: 85%;">
-                        <span onclick="abrirPasta()" style="display: inline-block; cursor: pointer;">
-                            <svg id="pasta" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none"
-                                stroke="#ffffff" stroke-width="1.5" class="bi bi-folder" viewBox="0 0 16 16">
-                                <path
-                                    d="M9.828 4a3 3 0 0 1 2.272 1H14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h4.5a2 2 0 0 1 1.854 1.276L9.828 4z" />
-                            </svg>
-                        </span>
-                    </div> -->
-
-
-
                 </div>
             </div>
         </div>
@@ -642,6 +569,15 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const sair = document.getElementById('sair');
+        sair.addEventListener('click', () => {
+            axios.get('/auth/logout').then(() => {
+                window.location.href = '/';
+            })
+        });
+    </script>
 
 
     <script>

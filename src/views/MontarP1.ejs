@@ -303,6 +303,7 @@
                         class="fas fa-chart-bar"></i>Resultados</button>
                 <button class="btn" onclick="window.location.href='ajuda.html'"><i
                         class="fas fa-question-circle"></i>Ajuda</button>
+                        <button class="btn" type="button" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
 
 
@@ -365,6 +366,16 @@ oudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
 
 </body>
+
+<script>
+    const sair = document.getElementById('sair');
+    sair.addEventListener('click', () => {
+        axios.get('/auth/logout').then(() => {
+            window.location.href = '/';
+        })
+    });
+</script>
+
 <script>
     function redirecionamento(disciplina) {
         window.location.href = 'MontarP2.html?disciplina=' + disciplina;

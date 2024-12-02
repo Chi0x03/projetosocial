@@ -459,6 +459,7 @@
                         class="fas fa-chart-bar"></i>Resultados</button> <!-- Botão para resultados -->
                 <button class="btn" onclick="window.location.href='ajuda.html'"><i
                         class="fas fa-question-circle"></i>Ajuda</button> <!-- Botão para ajuda -->
+                <button class="btn" type="button" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
 
             <!-- Conteúdo Principal -->
@@ -517,6 +518,14 @@
 
 
 </body>
+<script>
+    const sair = document.getElementById('sair');
+    sair.addEventListener('click', () => {
+        axios.get('/auth/logout').then(() => {
+            window.location.href = '/';
+        })
+    });
+</script>
 
 <script>
     function getCookie(name) {
