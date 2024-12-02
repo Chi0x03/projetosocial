@@ -498,6 +498,7 @@
                         class="fas fa-chart-bar"></i>Resultados</button>
                 <button class="btn" onclick="window.location.href='ajuda.html'"><i
                         class="fas fa-question-circle"></i>Ajuda</button>
+                        <button class="btn" type="button" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
 
 
@@ -766,6 +767,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+        <script>
+            const sair = document.getElementById('sair');
+            sair.addEventListener('click', () => {
+                axios.get('/auth/logout').then(() => {
+                    window.location.href = '/';
+                })
+            });
+        </script>
 
     <script>
         function deletarQuestao(id) {
