@@ -384,20 +384,26 @@
         }
 
         .btn {
-            /* background-color: #ff9100; */
+
             border: none;
             padding: 10px 20px;
             color: #ffffff;
             font-weight: thin;
             border-radius: 25px;
             cursor: pointer;
-            /* transition: background-color 0.3s ease; */
+            background-color: #ff9100;
+            font-size: 20px;
+            transition: background-color 0.4s ease;
         }
 
+
         .btn:hover {
-            background-color: #ff9100;
-            transition: background-color 0.3s ease;
+            transform: scale(1.05);
+            cursor: pointer;
+            background-color: #424242;
+
         }
+
     </style>
 </head>
 
@@ -478,10 +484,15 @@
             </div>
 
             <ul id="ranking-list"></ul>
+            <!-- <div class="volta"><button class="btn_v_inicio"
+                    >Voltar
+                    ao início</button></div> -->
+
         </div>
 
-        <div class="menu" id="menu">☰</div>
+
     </div>
+
 
     <script>
         let dadosRanking = [];
